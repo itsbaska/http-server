@@ -28,7 +28,7 @@ public class HelloWorldServer {
                 String line;
                 String response = "";
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(response += line);
+                    response += line;
                 }
 
                 String headers = "HTTP/1.1 200 OK\r\n" + "Content-Length: " + response.length() + "\r\n" + "Content-Type: text/html\r\n\r\n";
