@@ -6,26 +6,66 @@ import java.net.*;
 import java.io.File;
 
 public class HelloWorldServer {
+    public int PORT = 3000;
+
     public void go() {
+        ServerSocket serverSocket = createSocket();
+        Socket socket = listenSocketServer(serverSocket);
+        listenSocketBufferedReader(socket);
+        closeSocket(socket);
+    }
+
+    public void closeSocket(Socket socket) {
         try {
-            ServerSocket serverSock = new ServerSocket(3000);
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("Closing socket failed");
+            System.exit(-1);
+        }
+    }
 
-            while(true) {
-                Socket socket = serverSock.accept();
-                System.out.println("got a request");
-                InputStream inputStream = socket.getInputStream();
-                OutputStream outputStream = socket.getOutputStream();
-
-                String htmlContent = getHtmlContent("hello-world.html");
-                String headers = setHeaders(htmlContent);
-
+    public void listenSocketBufferedReader(Socket socket) {
+        OutputStream outputStream = null;
+//        InputStream inputStream = null;
+        String htmlContent = "";
+        String headers = "";
+        while(true) {
+            try {
+                outputStream = socket.getOutputStream();
+//              inputStream = socket.getInputStream();
+                htmlContent = getHtmlContent("hello-world.html");
+                headers = setHeaders(htmlContent);
                 outputStream.write((headers + htmlContent).getBytes("UTF-8"));
                 outputStream.flush();
-                socket.close();
+            } catch (IOException e) {
+                System.out.println("Read failed");
+                System.exit(-1);
             }
-        } catch(IOException ex) {
-            ex.printStackTrace();
         }
+    }
+
+    public Socket listenSocketServer(ServerSocket serverSocket) {
+        Socket socket2 = null;
+        try {
+            System.out.println("got a request");
+            socket2 = serverSocket.accept();
+        } catch(IOException ex) {
+            System.out.println("Accept failed: " + PORT);
+            System.exit(-1);
+        }
+        return socket2;
+    }
+
+    public ServerSocket createSocket() {
+        ServerSocket serverSocket2 = null;
+        try {
+            serverSocket2 = new ServerSocket(PORT);
+        } catch(IOException ex) {
+            System.out.println("Could not listen on port " + PORT);
+            ex.printStackTrace();
+            System.exit(-1);
+        }
+        return serverSocket2;
     }
 
     public String getHtmlContent(String filename) {
@@ -48,7 +88,10 @@ public class HelloWorldServer {
     }
 
     public String setHeaders(String content) {
-        String headers = "HTTP/1.1 200 OK\r\n" + "Content-Length: " + content.length() + "\r\n" + "Content-Type: text/html\r\n\r\n";
+        String headers = "HTTP/1.1 200 OK\r\n" +
+                "Content-Length: " +
+                content.length() + "\r\n" +
+                "Content-Type: text/html\r\n\r\n";
         return headers;
     }
 }

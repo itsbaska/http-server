@@ -6,16 +6,24 @@ import java.net.*;
 
 public class HelloWorldClient {
     public void go() {
+        System.out.println("Client connected --- ");
+
         try {
             Socket socket = new Socket("127.0.0.1", 3000);
-            System.out.println("Client connected --- ");
 
             InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
-            BufferedReader reader = new BufferedReader(streamReader);
+//            System.out.println(streamReader);
 
-            String something = reader.readLine();
-            System.out.println(something);
-            System.out.println("Client connected");
+            BufferedReader reader = new BufferedReader(streamReader);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("hetr");
+                System.out.println(line);
+                System.out.println("ther");
+            }
+
+//            String something = reader.readLine();
+//            System.out.println(something);
 
             reader.close();
         } catch (IOException ex) {

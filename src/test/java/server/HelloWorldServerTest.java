@@ -4,6 +4,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class HelloWorldServerTest {
+    @Test public void testServerOpenSocket() {
+        HelloWorldServer server = new HelloWorldServer();
+        assertEquals("HTTP/1.1 200 OK\r\n" +
+                "Content-Length: 4\r\n" +
+                "Content-Type: text/html\r\n\r\n", server.setHeaders("this"));
+    }
+
     @Test public void testServerGetsHeaders() {
         HelloWorldServer server = new HelloWorldServer();
         assertEquals("HTTP/1.1 200 OK\r\n" +
