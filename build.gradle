@@ -20,6 +20,10 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    // Cucumber
+    testCompile 'io.cucumber:cucumber-java8:3.0.2'
+    testCompile 'io.cucumber:cucumber-junit:3.0.2'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -27,4 +31,17 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
+
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.testRuntimeClasspath  + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+        }
+    }
 }
