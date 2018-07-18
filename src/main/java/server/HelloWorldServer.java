@@ -12,40 +12,46 @@ public class HelloWorldServer {
   public void go() {
     ServerSocket serverSocket = createSocket();
     while (true) {
-      Socket socket = listenSocketServer(serverSocket);
-      listenSocketBufferedReader(socket, "./content/hello-world.html");
-      closeSocket(socket);
+      Socket clientSocket = clientSocket(serverSocket);
+      listenSocketBufferedReader(clientSocket, "./content/hello-world.html");
+      closeSocket(clientSocket);
     }
   }
 
-  public void closeSocket(Socket socket) {
+  public void closeSocket(Socket clientSocket) {
     try {
-      socket.close();
+      System.out.println("Closing connection with client: " + clientSocket.getInetAddress());
+      clientSocket.close();
     } catch (IOException e) {
       System.out.println("Closing socket failed");
       System.exit(-1);
     }
   }
 
-  public void listenSocketBufferedReader(Socket socket, String file) {
-    OutputStream outputStream = null;
-//        InputStream inputStream = null;
+  public void listenSocketBufferedReader(Socket clientSocket, String file) {
+    OutputStream outputStream;
+    InputStream inputStream;
     try {
-      outputStream = socket.getOutputStream();
-//        inputStream = socket.getInputStream();
-      outputStream.write((setHeaders(file) + getHtmlContent(file)).getBytes("UTF-8"));
+      outputStream = clientSocket.getOutputStream();
+      inputStream = clientSocket.getInputStream();
+
+      outputStream.write((setResponseHeaders(file) + getHtmlContent(file)).getBytes("UTF-8"));
       outputStream.flush();
+
+      outputStream.close();
+      inputStream.close();
     } catch (IOException e) {
+      System.out.println(e);
       System.out.println("Read failed");
       System.exit(-1);
     }
   }
 
-  public Socket listenSocketServer(ServerSocket serverSocket) {
+  public Socket clientSocket(ServerSocket serverSocket) {
     Socket socket2 = null;
     try {
-      System.out.println("got a request");
       socket2 = serverSocket.accept();
+      System.out.println("Accepted connection from client: " + socket2.getRemoteSocketAddress());
     } catch (IOException ex) {
       System.out.println("Accept failed: " + PORT);
       System.exit(-1);
@@ -62,7 +68,6 @@ public class HelloWorldServer {
       ex.printStackTrace();
       System.exit(-1);
     }
-    System.out.println(serverSocket2);
     return serverSocket2;
   }
 
@@ -87,7 +92,7 @@ public class HelloWorldServer {
     return response;
   }
 
-  public String setHeaders(String file) {
+  public String setResponseHeaders(String file) {
     String headers = "HTTP/1.1 200 OK\r\n" +
       "Content-Length: " +
       getHtmlContent(file).length() + "\r\n" +
