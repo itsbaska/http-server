@@ -3,22 +3,16 @@ package server;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 import static org.junit.Assert.*;
 
-public class HelloWorldServerTest {
+public class ServerTest {
+
 //  @Test
-//  public void testCreateSocket() {
-//    HelloWorldServer server = new HelloWorldServer();
-//    assertEquals(, server.createSocket());
-//  }
-
-  @Test
   public void testServerOpenSocket() {
-    HelloWorldServer server = new HelloWorldServer();
-
-//    new TestableSocket(new ByteArrayInputStream("some string I want to test".getBytes())
-
+    Server server = new Server();
     assertEquals(TestableSocket.testSocket(), server.clientSocket(server.createSocket()));
   }
 
@@ -26,19 +20,29 @@ public class HelloWorldServerTest {
     public static ByteArrayInputStream testSocket() {
       return new ByteArrayInputStream("some string I want to test".getBytes());
     }
+    public boolean serverIsRunning() {
+      Server server = new Server();
+      try (ServerSocket s = server.createSocket()) {
+        return true;
+      } catch (IOException ex) {
+        /* ignore */
+      }
+      return false;
+    }
   }
 
   @Test
   public void testServerGetsHeaders() {
-    HelloWorldServer server = new HelloWorldServer();
+    Response response = new Response();
     assertEquals("HTTP/1.1 200 OK\r\n" +
       "Content-Length: 150\r\n" +
-      "Content-Type: text/html\r\n\r\n", server.setResponseHeaders("./content/hello-world.html"));
+      "Content-Type: text/html\r\n\r\n", response.res200("./content/hello-world.html"));
   }
 
   @Test
   public void testServerReadsFile() {
-    HelloWorldServer server = new HelloWorldServer();
+    Response response = new Response();
+
     assertEquals("<!DOCTYPE html>" +
       "<html lang=\"en\">" +
       "<head>" +
@@ -48,6 +52,6 @@ public class HelloWorldServerTest {
       "<body>" +
       "    <div><h1>Hello World!</h1></div>" +
       "</body>" +
-      "</html>", server.getHtmlContent("./content/hello-world.html"));
+      "</html>", response.getHtmlContent("./content/hello-world.html"));
   }
 }

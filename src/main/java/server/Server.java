@@ -4,9 +4,8 @@ package server;/*
 
 import java.io.*;
 import java.net.*;
-import java.io.File;
 
-public class HelloWorldServer {
+public class Server {
   public int PORT = 3000;
 
   public void go() {
@@ -29,17 +28,23 @@ public class HelloWorldServer {
   }
 
   public void listenSocketBufferedReader(Socket clientSocket, String file) {
-    OutputStream outputStream;
-    InputStream inputStream;
+    Response response = new Response();
     try {
-      outputStream = clientSocket.getOutputStream();
-      inputStream = clientSocket.getInputStream();
-
-      outputStream.write((setResponseHeaders(file) + getHtmlContent(file)).getBytes("UTF-8"));
-      outputStream.flush();
+      PrintStream outputStream = new PrintStream(clientSocket.getOutputStream());
+      BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      String line = reader.readLine();
+      while (line != null) {
+        System.out.println(line);
+        if (line.equals("GET /echo HTTP/1.1")) {
+          outputStream.write((response.res200("")).getBytes("UTF-8"));
+        } else if (line.equals("POST /echo HTTP/1.1")) {
+          outputStream.write((response.res200("hello") + "hello").getBytes("UTF-8"));
+        }
+        line = reader.readLine();
+      }
 
       outputStream.close();
-      inputStream.close();
+      reader.close();
     } catch (IOException e) {
       System.out.println(e);
       System.out.println("Read failed");
@@ -71,36 +76,8 @@ public class HelloWorldServer {
     return serverSocket2;
   }
 
-  public String getHtmlContent(String filename) {
-    String response = "";
-    String line;
-
-    try {
-      File helloWorld = new File(filename);
-      BufferedReader reader = new BufferedReader(new FileReader(helloWorld));
-      try {
-        while ((line = reader.readLine()) != null) {
-          response += line;
-        }
-      } catch (IOException ex) {
-        ex.printStackTrace();
-      }
-    } catch (FileNotFoundException exception) {
-      System.out.println(exception);
-      response = get404Content();
-    }
-    return response;
-  }
-
-  public String setResponseHeaders(String file) {
-    String headers = "HTTP/1.1 200 OK\r\n" +
-      "Content-Length: " +
-      getHtmlContent(file).length() + "\r\n" +
-      "Content-Type: text/html\r\n\r\n";
-    return headers;
-  }
-
-  public String get404Content() {
-    return getHtmlContent("./content/404.html");
+  public static void main(String[] args) {
+    Server server = new Server();
+    server.go();
   }
 }

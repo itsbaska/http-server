@@ -4,18 +4,21 @@ import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import server.Request;
+import server.Server;
 
 public class echoStepDefs {
   @Given("the server is running")
-  public void the_server_is_running() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new PendingException();
+  public void serverIsRunning() {
+    Server server = new Server();
+    server.createSocket();
   }
 
- @When("I request {string} {string}")
-  public void i_request(String string, String string2) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new PendingException();
+  @When("I request {string} {string}")
+
+  public void i_request(String method, String path) {
+    Request request = new Request();
+    request.request(method, path);
   }
 
   @When("I {string} {string} to {string}")
