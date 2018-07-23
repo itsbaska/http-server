@@ -4,11 +4,12 @@ package server;/*
 
 import Response.Response;
 
+import java.awt.desktop.SystemSleepEvent;
 import java.io.*;
 import java.net.*;
 
 public class Server {
-  private PrintStream out;
+  private PrintWriter out;
   private BufferedReader in;
   private ServerSocket serverSocket;
   private int PORT = 3000;
@@ -17,15 +18,14 @@ public class Server {
   public Server() throws IOException {
     serverSocket = createSocket();
     clientSocket = clientSocket();
-    out = new PrintStream(clientSocket.getOutputStream());
+    out = new PrintWriter(clientSocket.getOutputStream(), true);
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
   }
 
   public void go() {
-    while (true) {
-      listenSocketBufferedReader(clientSocket);
-      closeSocket(clientSocket);
-    }
+    System.out.print("hererereer");
+    listenSocketBufferedReader();
+    closeSocket(clientSocket);
   }
 
   public void closeSocket(Socket clientSocket) {
@@ -33,35 +33,45 @@ public class Server {
       System.out.println("Closing connection with client: " + clientSocket.getInetAddress());
       clientSocket.close();
     } catch (IOException e) {
+      System.out.println(e);
       System.out.println("Closing socket failed");
       System.exit(-1);
     }
   }
 
-  public void listenSocketBufferedReader(Socket clientSocket) {
+  public void listenSocketBufferedReader() {
     try {
-      handleRequest(in, out);
-      out.close();
-      in.close();
+      while (true) {
+
+        handleRequest(in, out);
+        out.close();
+        in.close();
+      }
+
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Read failed");
       System.exit(-1);
     }
+
   }
-  public void handleRequest(BufferedReader in, PrintStream out) {
+
+  public void handleRequest(BufferedReader in, PrintWriter out) {
     try {
       Response response = new Response();
-      String line = in.readLine();
-      while (line != null) {
+      String line;
+      while ((line = in.readLine()) != null) {
         System.out.println(line);
         if (line.toLowerCase().contains("GET".toLowerCase())) {
-          out.write((response.res200("")).getBytes("UTF-8"));
+          out.write((response.res200("")));
         } else if (line.toLowerCase().contains("POST".toLowerCase())) {
-          out.write((response.res200("hello") + "hello").getBytes("UTF-8"));
+          if (line.toLowerCase().contains("hello".toLowerCase())) {
+            out.write((response.res200("hello")));
+          } else if (line.toLowerCase().contains("POST".toLowerCase())) {
+            out.write((response.res200("goodbye")));
+          }
         }
         out.flush();
-        line = in.readLine();
       }
     } catch (IOException ex) {
       System.out.println(ex);
@@ -73,8 +83,10 @@ public class Server {
   public Socket clientSocket() {
     Socket socket = null;
     try {
+//      while(true) {
       socket = serverSocket.accept();
       System.out.println("Accepted connection from client: " + socket.getRemoteSocketAddress());
+//      }
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Accept failed: " + PORT);

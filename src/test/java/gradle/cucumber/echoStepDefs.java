@@ -4,7 +4,7 @@ import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import server.Request;
+import Request.Request;
 import server.Server;
 
 public class echoStepDefs {
@@ -18,7 +18,7 @@ public class echoStepDefs {
 
   public void i_request(String method, String path) {
     Request request = new Request();
-    request.request(method, path);
+    request.requestGet(method, path);
   }
 
   @When("I {string} {string} to {string}")

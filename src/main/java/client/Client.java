@@ -6,24 +6,23 @@ import Request.Request;
 
 import java.io.*;
 import java.net.*;
-import java.nio.channels.Channel;
 
 public class Client {
-  private PrintStream out;
+  private PrintWriter out;
   private BufferedReader in;
   private Socket socket;
   private int PORT = 3000;
 
   public Client() throws IOException {
     socket = createSocket();
-    out = new PrintStream(socket.getOutputStream());
+    out = new PrintWriter(socket.getOutputStream());
     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
   }
 
   public void go() throws IOException {
     System.out.println("Client connected");
     while (true) {
-      makeRequest(out);
+      makeRequest(out, new Request().requestPost("goodbye"));
       readResponse(in);
       in.close();
       out.close();
@@ -34,11 +33,13 @@ public class Client {
 
   private void readResponse(BufferedReader in) {
     try {
-      String line = in.readLine();
-      while (line != null) {
-        System.out.println(line);
-        line = in.readLine();
-      }
+      System.out.print(in.read());
+//      String line;
+//      while ((line = in.readLine()) != null) {
+//        System.out.println(line);
+//       }
+      System.out.println("I got here");
+
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Read failed");
@@ -46,17 +47,9 @@ public class Client {
     }
   }
 
-  public void makeRequest(PrintStream out) {
-    Request request = new Request();
-    try {
-//    out.write(((request.requestGet("GET","/echo")).getBytes("UTF-8")));
-      out.write(((request.requestPost("POST", "/echo", "say=Hi&to=Mom")).getBytes("UTF-8")));
-      out.flush();
-    } catch (IOException ex) {
-      System.out.println(ex);
-      System.out.println("Read failed");
-      System.exit(-1);
-    }
+  public void makeRequest(PrintWriter out, String request) throws IOException {
+    out.write((request));
+    out.flush();
   }
 
   public Socket createSocket() {
