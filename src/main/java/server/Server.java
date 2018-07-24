@@ -26,8 +26,7 @@ public class Server {
       out = createWriter(clientSocket);
       in = createReader(clientSocket);
       handleRequest(in, out);
-      in.close();
-//      closeConnection(in, out);
+      closeConnection(in, out);
       clientSocket.close();
       System.out.println("Closing connection with testClient: " + clientSocket.getInetAddress());
     }
@@ -51,7 +50,6 @@ public class Server {
             }
             out.flush();
         }
-          in.close();
       }
     } catch (IOException ex) {
       System.out.println(ex);
