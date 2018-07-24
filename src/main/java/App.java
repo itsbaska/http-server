@@ -7,7 +7,7 @@ public class App {
     public static void main(String[] args) {
 //        HelloWorldServer server = new HelloWorldServer();
 //        server.go();
-//        HelloWorldClient client = new HelloWorldClient();
-//        client.go();
+//        HelloWorldClient testClient = new HelloWorldClient();
+//        testClient.go();
     }
 }

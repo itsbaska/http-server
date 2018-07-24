@@ -4,9 +4,11 @@ package server;/*
 
 import Response.Response;
 
-import java.awt.desktop.SystemSleepEvent;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+
+import static com.google.common.io.ByteStreams.toByteArray;
 
 public class Server {
   private PrintWriter out;
@@ -15,63 +17,41 @@ public class Server {
   private int PORT = 3000;
   private Socket clientSocket;
 
-  public Server() throws IOException {
+  public void go() throws IOException {
     serverSocket = createSocket();
-    clientSocket = clientSocket();
-    out = new PrintWriter(clientSocket.getOutputStream(), true);
-    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-  }
 
-  public void go() {
-    System.out.print("hererereer");
-    listenSocketBufferedReader();
-    closeSocket(clientSocket);
-  }
+    while (true) {
+      clientSocket = clientSocket(serverSocket);
 
-  public void closeSocket(Socket clientSocket) {
-    try {
-      System.out.println("Closing connection with client: " + clientSocket.getInetAddress());
+      out = createWriter(clientSocket);
+      in = createReader(clientSocket);
+      handleRequest(in, out);
+      in.close();
+//      closeConnection(in, out);
       clientSocket.close();
-    } catch (IOException e) {
-      System.out.println(e);
-      System.out.println("Closing socket failed");
-      System.exit(-1);
+      System.out.println("Closing connection with testClient: " + clientSocket.getInetAddress());
     }
-  }
-
-  public void listenSocketBufferedReader() {
-    try {
-      while (true) {
-
-        handleRequest(in, out);
-        out.close();
-        in.close();
-      }
-
-    } catch (IOException ex) {
-      System.out.println(ex);
-      System.out.println("Read failed");
-      System.exit(-1);
-    }
-
   }
 
   public void handleRequest(BufferedReader in, PrintWriter out) {
     try {
       Response response = new Response();
       String line;
+      ArrayList<String> responseText = new ArrayList();
       while ((line = in.readLine()) != null) {
         System.out.println(line);
-        if (line.toLowerCase().contains("GET".toLowerCase())) {
-          out.write((response.res200("")));
-        } else if (line.toLowerCase().contains("POST".toLowerCase())) {
-          if (line.toLowerCase().contains("hello".toLowerCase())) {
-            out.write((response.res200("hello")));
+        responseText.add(line);
+          if (line.toLowerCase().contains("GET".toLowerCase())) {
+            out.write((response.res200("")));
           } else if (line.toLowerCase().contains("POST".toLowerCase())) {
-            out.write((response.res200("goodbye")));
-          }
+            if (line.toLowerCase().contains("hello".toLowerCase())) {
+              out.write((response.res200("hello")));
+            } else if (line.toLowerCase().contains("POST".toLowerCase())) {
+              out.write((response.res200("goodbye")));
+            }
+            out.flush();
         }
-        out.flush();
+          in.close();
       }
     } catch (IOException ex) {
       System.out.println(ex);
@@ -80,13 +60,11 @@ public class Server {
     }
   }
 
-  public Socket clientSocket() {
+  public Socket clientSocket(ServerSocket serverSocket) {
     Socket socket = null;
     try {
-//      while(true) {
       socket = serverSocket.accept();
-      System.out.println("Accepted connection from client: " + socket.getRemoteSocketAddress());
-//      }
+      System.out.println("Accepted connection from testClient: " + socket.getRemoteSocketAddress());
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Accept failed: " + PORT);
@@ -105,6 +83,19 @@ public class Server {
       System.exit(-1);
     }
     return serverSocket;
+  }
+
+  public BufferedReader createReader(Socket clientSocket) throws IOException {
+    return new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+  }
+
+  public PrintWriter createWriter(Socket clientSocket) throws IOException {
+    return new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+  }
+
+  public void closeConnection(BufferedReader in, PrintWriter out) throws IOException {
+    in.close();
+    out.close();
   }
 
   public static void main(String[] args) throws IOException {

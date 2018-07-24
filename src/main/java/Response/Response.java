@@ -6,6 +6,7 @@ public class Response {
   public String res200(String content) {
     String headers = "HTTP/1.1 200 OK\r\n" +
       "Content-Length: " + (content + "\r\n\r\n").length() + "\r\n" +
+      "Connection: close\r\n" +
       "Content-Type: text/html\r\n\r\n" +
       content +
       "\r\n\r\n";
