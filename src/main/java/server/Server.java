@@ -45,7 +45,7 @@ public class Server {
           } else if (line.toLowerCase().contains("POST".toLowerCase())) {
             if (line.toLowerCase().contains("hello".toLowerCase())) {
               out.write((response.res200("hello")));
-            } else if (line.toLowerCase().contains("POST".toLowerCase())) {
+            } else if (line.toLowerCase().contains("goodbye".toLowerCase())) {
               out.write((response.res200("goodbye")));
             }
             out.flush();
