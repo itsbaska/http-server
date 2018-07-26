@@ -3,9 +3,6 @@ package request;
 import Request.Request;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
