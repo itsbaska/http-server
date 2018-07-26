@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class echoStepDefs {
-  private Server server;
   private TestClient testClient;
   private Response response;
 
