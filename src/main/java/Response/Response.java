@@ -37,9 +37,4 @@ public class Response {
     return responseHeaders[0].split(" ")[1];
   }
 
-  public String path() {
-    String responseHeaders[] = ResponseString.split(": |\\r\\n");
-    return responseHeaders[0].split(" ")[1];
-  }
-
 }
