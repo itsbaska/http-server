@@ -11,11 +11,8 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
   int PORT = 3000;
-  private Socket socket;
-  private PrintWriter out;
-  private BufferedReader in;
 
-  public Server go() throws IOException {
+  public void go() throws IOException {
     ServerSocket serverSocket = new ServerSocket(PORT);
 
     while (true) {
