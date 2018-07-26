@@ -1,7 +1,6 @@
 package gradle.cucumber;
 
 import Response.Response;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import testClient.TestClient;
 import cucumber.api.java.en.Given;
@@ -35,14 +34,14 @@ public class echoStepDefs {
   @When("^I \"([^\"]*)\" \"([^\"]*)\" to \"([^\"]*)\"$")
   public void iTo(String method, String data, String path) throws Throwable {
     testClient = new TestClient();
-    String request = new PostRequest().make(path, data);
+    String request = new Request().post(path, data);
     testClient.sendRequest(request);
   }
 
   @When("^I request \"([^\"]*)\" \"([^\"]*)\"$")
   public void iRequest(String method, String path) throws Throwable {
     testClient = new TestClient();
-    String request = new GetRequest().make();
+    String request = new Request().get();
     testClient.sendRequest(request);
   }
 
@@ -55,8 +54,7 @@ public class echoStepDefs {
   @Then("^the response status should be (\\d+)$")
   public void theResponseStatusShouldBe(int status) throws Throwable {
     response = new Response(testClient.getResponse());
-    String responseStatus = response.status();
-    assertEquals(status, Integer.parseInt(responseStatus));
+    assertEquals(status, response.status());
   }
 
   @And("^the response body should be \"([^\"]*)\"$")

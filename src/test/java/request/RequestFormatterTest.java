@@ -1,13 +1,13 @@
 package request;
 
-import Request.Request;
+import Request.RequestFormatter;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-public class RequestTest {
-  String CRLF = "\r\n";
-  Request request = new Request("POST /echo HTTP/1.1" + CRLF +
+public class RequestFormatterTest {
+  private String CRLF = "\r\n";
+  private RequestFormatter request = new RequestFormatter("POST /echo HTTP/1.1" + CRLF +
     "cache-control: no-cache" + CRLF +
     "Postman-Token: b952779f-f287-4e75-99cb-750c4545bfa3" + CRLF +
     "Content-Type: text/plain" + CRLF +
