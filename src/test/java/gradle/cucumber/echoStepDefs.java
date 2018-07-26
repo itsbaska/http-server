@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 public class echoStepDefs {
   private Server server;
   private TestClient testClient;
@@ -56,12 +55,6 @@ public class echoStepDefs {
 
   }
 
-  //  Given the server is running
-//  When I "POST" "hello" to "/echo"
-//  Then the response status should be 200
-//  And the response body should be "hello"
-
-
   @When("I {string} {string} to {string}")
   public void i_to(String method, String data, String path) throws IOException {
     testClient = new TestClient();
@@ -69,36 +62,13 @@ public class echoStepDefs {
     testClient.sendRequest(request);
   }
 
-  @When("I \"POST\" \"hello\" to \"/echo\"")
-  public void i_post_hello(String path, String data) throws IOException {
-    testClient = new TestClient();
-    String request = new PostRequest().make(path, data);
-    testClient.sendRequest(request);
-  }
-
-  @When("I \"POST\" \"goodbye\" to \"/echo\"")
-  public void i_post_goodbye(String string, String string2) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new PendingException();
-  }
-
-  @Then("the response body should be \"hello\"")
-  public void the_response_body_should_be_hello() throws IOException {
+  @Then("the response body should be {string}")
+  public void the_response_body_should_be(String responseBody) throws IOException {
     try {
       testClient.closeSocket();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    assertEquals("hello", response.body());
-  }
-
-  @Then("the response body should be \"goodbye\"")
-  public void the_response_body_should_be_goodbye() {
-    try {
-      testClient.closeSocket();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    assertEquals("goodbye", response.body());
+    assertEquals(responseBody, response.body());
   }
 }
