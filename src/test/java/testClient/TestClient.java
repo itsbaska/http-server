@@ -28,12 +28,15 @@ public class TestClient {
 
   public String getResponse() throws IOException {
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+    System.out.println("Inside get Response in Test client");
 
+//   THE READER HERE IS NOT WORKING TOO!!!!!!
     StringBuilder responseBuilder = new StringBuilder();
 
     while (in.ready() || responseBuilder.length() == 0) {
       responseBuilder.append((char) in.read());
     }
+    System.out.println(responseBuilder.toString());
     return responseBuilder.toString();
   }
 

@@ -34,10 +34,12 @@ public class Server {
       // Specifically only TestClient
       StringBuilder requestBuilder = new StringBuilder();
       while (in.ready() || requestBuilder.length() == 0) {
-        System.out.println(in.ready());
+        System.out.println(in.read());
+
         requestBuilder.append((char) in.read());
-        System.out.println(in.read() + "======");
       }
+      System.out.println(requestBuilder);
+
       System.out.println(requestBuilder.toString() + "++++++");
       Request request = new Request(requestBuilder.toString());
       switch(request.method()) {
