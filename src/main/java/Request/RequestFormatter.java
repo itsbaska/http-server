@@ -2,17 +2,17 @@ package Request;
 
 import java.util.HashMap;
 
-public class Request {
-  private String RequestString;
-  public Request(String request) {
-    RequestString = request;
+public class RequestFormatter {
+  public static String body(String requestString) {
+    String request[] = requestString.split("\\r\\n\\r\\n");
+    if (request.length == 1) {
+      return "";
+    } else {
+      return request[1];
+    }
   }
-  public String body() {
-    String request[] = RequestString.split("\\r\\n\\r\\n");
-    return request[1];
-  }
-  public HashMap<String, String> headers() {
-    String request[] = RequestString.split("\\r\\n\\r\\n");
+  public static HashMap<String, String> headers(String requestString) {
+    String request[] = requestString.split("\\r\\n\\r\\n");
     String requestHeaders[] = request[0].split(": |\\r\\n");
 
     HashMap<String, String> parsedHeaders = new HashMap<>();
@@ -23,13 +23,13 @@ public class Request {
     }
     return parsedHeaders;
   }
-  public String method() {
-    String requestHeaders[] = RequestString.split(": |\\r\\n");
+  public static String method(String requestString) {
+    String requestHeaders[] = requestString.split(": |\\r\\n");
     return requestHeaders[0].split(" ")[0];
   }
 
-  public String path() {
-    String requestHeaders[] = RequestString.split(": |\\r\\n");
+  public static String path(String requestString) {
+    String requestHeaders[] = requestString.split(": |\\r\\n");
     return requestHeaders[0].split(" ")[1];
   }
 }

@@ -1,4 +1,5 @@
 package server;
+import Request.Request;
 import Request.RequestFormatter;
 import Response.*;
 
@@ -28,13 +29,20 @@ public class Server {
       BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
+      // !!!!!!! Here is the problem....
+      // The Server is not reading the request form TestClient.
+      // Specifically only TestClient
       StringBuilder requestBuilder = new StringBuilder();
       while (in.ready() || requestBuilder.length() == 0) {
+        System.out.println(in.ready());
         requestBuilder.append((char) in.read());
+        System.out.println(in.read() + "======");
       }
-      RequestFormatter request = new RequestFormatter(requestBuilder.toString());
+      System.out.println(requestBuilder.toString() + "++++++");
+      Request request = new Request(requestBuilder.toString());
       switch(request.method()) {
         case "GET":
+          System.out.println("Server is sending res");
           out.write(new Status200("").response());
           break;
         case "POST":

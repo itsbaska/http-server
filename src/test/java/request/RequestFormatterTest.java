@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 public class RequestFormatterTest {
   private String CRLF = "\r\n";
-  private RequestFormatter request = new RequestFormatter("POST /echo HTTP/1.1" + CRLF +
+  private String request = "POST /echo HTTP/1.1" + CRLF +
     "cache-control: no-cache" + CRLF +
     "Postman-Token: b952779f-f287-4e75-99cb-750c4545bfa3" + CRLF +
     "Content-Type: text/plain" + CRLF +
@@ -17,24 +17,30 @@ public class RequestFormatterTest {
     "accept-encoding: gzip, deflate" + CRLF +
     "content-length: 4" + CRLF +
     "Connection: keep-alive" + CRLF + CRLF +
-    "hello");
+    "hello";
+
   @Test
   public void testRequestBody() {
-    assertEquals(request.body(), "hello");
+    assertEquals(RequestFormatter.body(request), "hello");
   }
 
   @Test
   public void testRequestMethod() {
-    assertEquals(request.method(), "POST");
+    assertEquals(RequestFormatter.method(request), "POST");
   }
 
   @Test
   public void testRequestPath() {
-    assertEquals(request.path(), "/echo");
+    assertEquals(RequestFormatter.path(request), "/echo");
+  }
+
+  @Test
+  public void testRequestPath2() {
+    assertNotEquals(RequestFormatter.path(request), "/bar");
   }
 
   @Test
   public void testRequestHeaders() {
-    assertEquals(request.headers().toString(), "{methodLine=POST /echo HTTP/1.1, content-length=4, Accept=*/*, User-Agent=PostmanRuntime/7.1.5, Connection=keep-alive, Postman-Token=b952779f-f287-4e75-99cb-750c4545bfa3, Host=127.0.0.1:3000, cache-control=no-cache, accept-encoding=gzip, deflate, Content-Type=text/plain}");
+    assertEquals(RequestFormatter.headers(request).toString(), "{methodLine=POST /echo HTTP/1.1, content-length=4, Accept=*/*, User-Agent=PostmanRuntime/7.1.5, Connection=keep-alive, Postman-Token=b952779f-f287-4e75-99cb-750c4545bfa3, Host=127.0.0.1:3000, cache-control=no-cache, accept-encoding=gzip, deflate, Content-Type=text/plain}");
   }
 }

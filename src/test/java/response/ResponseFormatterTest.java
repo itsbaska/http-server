@@ -1,8 +1,9 @@
 package response;
 
-import Response.Response;
+import Response.*;
 import org.junit.Test;
 
+import static Response.ResponseFormatter.*;
 import static org.junit.Assert.*;
 
 public class ResponseFormatterTest {
@@ -17,17 +18,17 @@ public class ResponseFormatterTest {
 
   @Test
   public void testResponseStatus() {
-    assertEquals(new Response(response).status(), 200);
+    assertEquals(status(response), "200");
   }
 
   @Test
   public void testResponseBody() {
-    assertEquals(new Response(response).body(), "hello");
+    assertEquals(body(response), "hello");
   }
 
   @Test
   public void testResponseHeaders() {
-    assertEquals(new Response(response).headers().toString(), "{methodLine=HTTP/1.1 200, Connection=close, Content-Length=5, Content-Type=text/html}");
+    assertEquals(headers(response).toString(), "{methodLine=HTTP/1.1 200, Connection=close, Content-Length=5, Content-Type=text/html}");
   }
 
 }

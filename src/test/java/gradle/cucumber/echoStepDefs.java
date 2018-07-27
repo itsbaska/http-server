@@ -1,12 +1,9 @@
 package gradle.cucumber;
 
-import Response.Response;
-import cucumber.api.java.en.And;
-import testClient.TestClient;
 import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import Request.*;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.And;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,6 +11,10 @@ import java.net.SocketException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import Request.*;
+import Response.Response;
+import testClient.TestClient;
 
 public class echoStepDefs {
   private TestClient testClient;
@@ -32,16 +33,16 @@ public class echoStepDefs {
   }
 
   @When("^I \"([^\"]*)\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iTo(String method, String data, String path) throws Throwable {
+  public void iTo(String method, String body, String path) throws Throwable {
     testClient = new TestClient();
-    String request = new Request().post(path, data);
+    String request = new Post(path, body).request();
     testClient.sendRequest(request);
   }
 
   @When("^I request \"([^\"]*)\" \"([^\"]*)\"$")
   public void iRequest(String method, String path) throws Throwable {
     testClient = new TestClient();
-    String request = new Request().get();
+    String request = new Get(path).request();
     testClient.sendRequest(request);
   }
 
@@ -53,8 +54,12 @@ public class echoStepDefs {
 
   @Then("^the response status should be (\\d+)$")
   public void theResponseStatusShouldBe(int status) throws Throwable {
-    response = new Response(testClient.getResponse());
-    assertEquals(status, response.status());
+    System.out.println("Before getting res");
+    String clientResponse = testClient.getResponse();
+
+    System.out.println(clientResponse);
+    response = new Response(clientResponse);
+    assertEquals(status, Integer.parseInt(response.status()));
   }
 
   @And("^the response body should be \"([^\"]*)\"$")

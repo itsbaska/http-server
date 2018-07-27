@@ -2,15 +2,10 @@ package Response;
 
 import java.util.HashMap;
 
-public class Response {
-  private String ResponseString;
+public class ResponseFormatter {
 
-  public Response(String response) {
-    ResponseString = response;
-  }
-
-  public String body() {
-    String response[] = ResponseString.split("\\r\\n\\r\\n");
+  public static String body(String responseString) {
+    String response[] = responseString.split("\\r\\n\\r\\n");
     if (response.length == 1) {
       return "";
     } else {
@@ -18,8 +13,8 @@ public class Response {
     }
   }
 
-  public HashMap<String, String> headers() {
-    String response[] = ResponseString.split("\\r\\n\\r\\n");
+  public static HashMap<String, String> headers(String responseString) {
+    String response[] = responseString.split("\\r\\n\\r\\n");
     String responseHeaders[] = response[0].split(": |\\r\\n");
 
     HashMap<String, String> parsedHeaders = new HashMap<>();
@@ -32,8 +27,8 @@ public class Response {
   }
 
 
-  public String status() {
-    String responseHeaders[] = ResponseString.split(": |\\r\\n");
+  public static String status(String responseString) {
+    String responseHeaders[] = responseString.split(": |\\r\\n");
     return responseHeaders[0].split(" ")[1];
   }
 

@@ -1,24 +1,26 @@
 package Request;
 
 public class Request {
+  private final String method;
+  private final String path;
+  private final String body;
 
-  public String get () {
-    String CRLF = "\r\n";
-    return "GET /echo HTTP/1.1" + CRLF +
-      "cache-control: no-cache" + CRLF +
-      "Content-Type: text/plain" + CRLF +
-      "Accept: */*" + CRLF +
-      "Host: 127.0.0.1:3000" + CRLF +
-      "accept-encoding: gzip, deflate" + CRLF +
-      "Connection: keep-alive" + CRLF + CRLF;
+  public Request(String request) {
+    System.out.println(request);
+    this.method = RequestFormatter.method(request);
+    this.path = RequestFormatter.path(request);
+    this.body = RequestFormatter.body(request);
   }
 
-  public String post (String path, String body) {
-    String CRLF = "\r\n";
-    return "POST / HTTP/1.1" + CRLF +
-      "Host: 127.0.0.1" + path + CRLF +
-      "Content-Type: application/x-www-form-urlencoded" + CRLF +
-      "Content-Length: " + body.length() + CRLF +CRLF +
-      body;
+  public String method() {
+    return method;
+  }
+
+  public String path() {
+    return path;
+  }
+
+  public String body() {
+    return body;
   }
 }
