@@ -27,28 +27,22 @@ public class Server {
   private void handleRequest(Socket clientSocket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
-      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
-      // !!!!!!! Here is the problem....
-      // The Server is not reading the request form TestClient.
-      // Specifically only TestClient
       StringBuilder requestBuilder = new StringBuilder();
       while (in.ready() || requestBuilder.length() == 0) {
-        System.out.println(in.read());
-
         requestBuilder.append((char) in.read());
       }
-      System.out.println(requestBuilder);
 
-      System.out.println(requestBuilder.toString() + "++++++");
-      Request request = new Request(requestBuilder.toString());
-      switch(request.method()) {
+      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+      String requestMethod = RequestFormatter.method(requestBuilder.toString());
+      String requestBody = RequestFormatter.body(requestBuilder.toString());
+      System.out.println(requestMethod);
+      switch(requestMethod) {
         case "GET":
-          System.out.println("Server is sending res");
           out.write(new Status200("").response());
           break;
         case "POST":
-            out.write(new Status200(request.body()).response());
+            out.write(new Status200(requestBody).response());
           break;
         default:
           System.out.println("no match");
