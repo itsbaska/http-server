@@ -35,7 +35,8 @@ public class RequestTest {
       "accept-encoding: gzip, deflate" + CRLF +
       "content-length: 4" + CRLF +
       "Connection: keep-alive" + CRLF + CRLF;
-    assertEquals("", new Request(request).body());
+    Request actual = new Request(request);
+    assertEquals("", actual.body());
   }
 
   @Test
