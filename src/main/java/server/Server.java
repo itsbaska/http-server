@@ -1,5 +1,4 @@
 package server;
-import Request.Request;
 import Request.RequestFormatter;
 import Response.*;
 
@@ -9,9 +8,10 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
 
-  private void go() throws IOException {
-    int PORT = 3000;
-    ServerSocket serverSocket = new ServerSocket(PORT);
+  public void go(String port) throws IOException {
+    System.out.println("Starting Server on PORT: " + port);
+
+    ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
 
     while (true) {
       Socket clientSocket = serverSocket.accept();
@@ -56,9 +56,5 @@ public class Server {
       System.out.println("Read failed");
       System.exit(-1);
     }
-  }
-
-  public static void main(String[] args) throws IOException {
-    new Server().go();
   }
 }
