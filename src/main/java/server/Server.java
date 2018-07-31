@@ -39,10 +39,10 @@ public class Server {
       System.out.println(requestMethod);
       switch(requestMethod) {
         case "GET":
-          out.write(new Status200("").response());
+          out.write(new Response(200,"").response());
           break;
         case "POST":
-            out.write(new Status200(requestBody).response());
+            out.write(new Response(200, requestBody).response());
           break;
         default:
           System.out.println("no match");
