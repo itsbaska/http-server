@@ -9,6 +9,7 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -27,6 +28,8 @@ public class EchoSteps {
   private HttpGet httpGet;
   private HttpPost httpPost;
   private static int DEFAULT_PORT = 3000;
+  private static String HOST = "127.0.0.1";
+
 
   private static boolean serverIsRunning(int port) throws IOException {
     boolean result = false;
@@ -47,36 +50,35 @@ public class EchoSteps {
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
   public void iTo(String body, String path) throws Throwable {
     httpclient = HttpClients.createDefault();
-    httpPost = new HttpPost("http://localhost:" + Integer.toString(DEFAULT_PORT) + path);
-    response = httpclient.execute(httpPost);
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+
+    httpPost = new HttpPost(uri);
     httpPost.setEntity(new StringEntity(body));
-    CloseableHttpResponse response = httpclient.execute(httpPost);
-    try {
-      HttpEntity entity2 = response.getEntity();
-      EntityUtils.consume(entity2);
-    } finally {
-      response.close();
-    }
+    response = httpclient.execute(httpPost);
   }
 
   @When("^I request \"GET\" \"([^\"]*)\"$")
   public void iRequest(String path) throws Throwable {
     httpclient = HttpClients.createDefault();
-    httpGet = new HttpGet("http://localhost:" + Integer.toString(DEFAULT_PORT) + path);
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+    httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
   }
 
   @And("the response body should be empty")
   public void the_response_body_should_be_empty() throws IOException {
     String responseBody;
-    try {
-      HttpEntity entity = response.getEntity();
-      EntityUtils.consume(entity);
-      ResponseHandler<String> handler = new BasicResponseHandler();
-      responseBody = httpclient.execute(httpGet, handler);
-    } finally {
-      response.close();
-    }
+      responseBody = new BasicResponseHandler().handleResponse(response);
     assertEquals("", responseBody);
   }
 
@@ -88,14 +90,7 @@ public class EchoSteps {
   @And("^the response body should be \"([^\"]*)\"$")
   public void theResponseBodyShouldBe(String responseBody) throws IOException {
     String responseBody1;
-    try {
-      HttpEntity entity = response.getEntity();
-      EntityUtils.consume(entity);
-      ResponseHandler<String> handler = new BasicResponseHandler();
-      responseBody1 = httpclient.execute(httpPost, handler);
-    } finally {
-      response.close();
-    }
+    responseBody1 = new BasicResponseHandler().handleResponse(response);
     assertEquals(responseBody, responseBody1);
   }
 
@@ -114,7 +109,13 @@ public class EchoSteps {
   @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
   public void iRequestOnPort(String path, String port) throws Throwable {
     httpclient = HttpClients.createDefault();
-    httpGet = new HttpGet("http://127.0.0.1:" + port + path);
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(Integer.parseInt(port))
+      .setPath(path)
+      .build();
+    httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
   }
 }

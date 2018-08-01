@@ -36,7 +36,6 @@ public class Server {
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
       String requestMethod = RequestFormatter.method(requestBuilder.toString());
       String requestBody = RequestFormatter.body(requestBuilder.toString());
-      System.out.println(requestMethod);
       switch(requestMethod) {
         case "GET":
           out.write(new Response(200,"").response());

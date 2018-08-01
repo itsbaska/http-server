@@ -6,7 +6,6 @@ public class Request {
   private final String body;
 
   public Request(String request) {
-    System.out.println(request);
     this.method = RequestFormatter.method(request);
     this.path = RequestFormatter.path(request);
     this.body = RequestFormatter.body(request);
