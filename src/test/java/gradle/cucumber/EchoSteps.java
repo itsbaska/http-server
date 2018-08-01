@@ -24,7 +24,7 @@ public class EchoSteps {
   private CloseableHttpResponse response;
   private HttpGet httpGet;
   private HttpPost httpPost;
-  private static int DEFAULT_PORT = 3000;
+  private static int DEFAULT_PORT = 5000;
   private static String HOST = "127.0.0.1";
 
   private static boolean serverIsRunning(int port) throws IOException {
