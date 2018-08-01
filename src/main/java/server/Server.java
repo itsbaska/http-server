@@ -1,6 +1,6 @@
 package server;
 import Request.RequestFormatter;
-import Response.*;
+import Response.Response;
 
 import java.io.*;
 import java.net.*;
