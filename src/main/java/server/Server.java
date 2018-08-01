@@ -1,4 +1,5 @@
 package server;
+import Request.Request;
 import Request.RequestFormatter;
 import Response.Response;
 
@@ -34,14 +35,14 @@ public class Server {
       }
 
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-      String requestMethod = RequestFormatter.method(requestBuilder.toString());
-      String requestBody = RequestFormatter.body(requestBuilder.toString());
-      switch(requestMethod) {
+
+      Request request = new Request.Builder().build(requestBuilder.toString());
+      switch(request.method) {
         case "GET":
           out.write(new Response(200,"", 0).text);
           break;
         case "POST":
-            out.write(new Response(200, requestBody, requestBody.length()).text);
+            out.write(new Response(200, request.body, request.body.length()).text);
           break;
         default:
           System.out.println("no match");
