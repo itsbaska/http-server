@@ -10,14 +10,7 @@ public class StartServer {
     if (0 != args.length) {
       if (args[i].equals("-p")) {
         String port = args[i + 1];
-        boolean portTaken = false;
-        try {
-          (new Socket("127.0.0.1", Integer.parseInt(port))).close();
-          portTaken = true;
-        } catch (SocketException ignored) {
-        }
-
-        if (portTaken) {
+        if (portIsAvailable(port)) {
           System.err.println("PORT: " + port + " is already in use.");
         } else {
           System.out.println("PORT: " + port);
@@ -29,6 +22,15 @@ public class StartServer {
       }
     } else {
       System.err.println("Usage: StartServer [-p] [PORT number]");
+    }
+  }
+
+  public static boolean portIsAvailable(String port) throws IOException {
+    try {
+      (new Socket("127.0.0.1", Integer.parseInt(port))).close();
+      return true;
+    } catch (SocketException ignored) {
+      return false;
     }
   }
 }
