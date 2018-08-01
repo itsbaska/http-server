@@ -30,7 +30,6 @@ public class EchoSteps {
   private static int DEFAULT_PORT = 3000;
   private static String HOST = "127.0.0.1";
 
-
   private static boolean serverIsRunning(int port) throws IOException {
     boolean result = false;
     try {
@@ -78,7 +77,7 @@ public class EchoSteps {
   @And("the response body should be empty")
   public void the_response_body_should_be_empty() throws IOException {
     String responseBody;
-      responseBody = new BasicResponseHandler().handleResponse(response);
+    responseBody = new BasicResponseHandler().handleResponse(response);
     assertEquals("", responseBody);
   }
 
