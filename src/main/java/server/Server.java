@@ -38,10 +38,10 @@ public class Server {
       String requestBody = RequestFormatter.body(requestBuilder.toString());
       switch(requestMethod) {
         case "GET":
-          out.write(new Response(200,"").response());
+          out.write(new Response(200,"", 0).text);
           break;
         case "POST":
-            out.write(new Response(200, requestBody).response());
+            out.write(new Response(200, requestBody, requestBody.length()).text);
           break;
         default:
           System.out.println("no match");
