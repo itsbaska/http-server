@@ -1,6 +1,5 @@
 package server;
 import Request.Request;
-import Request.RequestFormatter;
 import Response.Response;
 
 import java.io.*;
