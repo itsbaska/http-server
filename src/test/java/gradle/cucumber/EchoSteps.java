@@ -4,16 +4,14 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.*;
@@ -21,57 +19,62 @@ import java.net.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class echoStepDefs {
+public class EchoSteps {
   private CloseableHttpClient httpclient;
   private CloseableHttpResponse response;
   private HttpGet httpGet;
-  private String responseBody;
   private HttpPost httpPost;
+  private static int DEFAULT_PORT = 5000;
+  private static String HOST = "127.0.0.1";
+
+  private static boolean serverIsRunning(int port) throws IOException {
+    boolean result = false;
+    try {
+      (new Socket("127.0.0.1", port)).close();
+      result = true;
+    } catch (SocketException e) {
+      System.out.println(e);
+    }
+    return result;
+  }
 
   @Given("the server is running")
   public void serverIsRunning() throws IOException {
-    boolean result = false;
-    try {
-      (new Socket("127.0.0.1", 3000)).close();
-      result = true;
-    } catch(SocketException e) {
-      System.out.println(e);
-    }
-    assertTrue(result);
+    assertTrue(serverIsRunning(DEFAULT_PORT));
   }
 
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
   public void iTo(String body, String path) throws Throwable {
     httpclient = HttpClients.createDefault();
-    httpPost = new HttpPost("http://localhost:3000" + path);
-    response = httpclient.execute(httpPost);
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+
+    httpPost = new HttpPost(uri);
     httpPost.setEntity(new StringEntity(body));
-    CloseableHttpResponse response = httpclient.execute(httpPost);
-    try {
-      HttpEntity entity2 = response.getEntity();
-      EntityUtils.consume(entity2);
-    } finally {
-      response.close();
-    }
+    response = httpclient.execute(httpPost);
   }
 
   @When("^I request \"GET\" \"([^\"]*)\"$")
   public void iRequest(String path) throws Throwable {
     httpclient = HttpClients.createDefault();
-    httpGet = new HttpGet("http://localhost:3000" + path);
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+    httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
   }
 
   @And("the response body should be empty")
   public void the_response_body_should_be_empty() throws IOException {
-    try {
-      HttpEntity entity = response.getEntity();
-      EntityUtils.consume(entity);
-      ResponseHandler<String> handler = new BasicResponseHandler();
-      responseBody = httpclient.execute(httpGet, handler);
-    } finally {
-      response.close();
-    }
+    String responseBody;
+    responseBody = new BasicResponseHandler().handleResponse(response);
     assertEquals("", responseBody);
   }
 
@@ -83,14 +86,32 @@ public class echoStepDefs {
   @And("^the response body should be \"([^\"]*)\"$")
   public void theResponseBodyShouldBe(String responseBody) throws IOException {
     String responseBody1;
-    try {
-      HttpEntity entity = response.getEntity();
-      EntityUtils.consume(entity);
-      ResponseHandler<String> handler = new BasicResponseHandler();
-      responseBody1 = httpclient.execute(httpPost, handler);
-    } finally {
-      response.close();
-    }
+    responseBody1 = new BasicResponseHandler().handleResponse(response);
     assertEquals(responseBody, responseBody1);
+  }
+
+  @Given("^I am in a console shell$")
+  public void iAmInAConsoleShell() throws Throwable {
+    Runtime.getRuntime()
+    .exec("javac -cp src/main/java/StartServer.java ");
+  }
+
+  @When("^I start the server with the option \"([^\"]*)\"$")
+  public void iStartTheServerWithTheOption(String option) throws Throwable {
+    Runtime.getRuntime()
+    .exec("java -cp src/main/java StartServer " + option);
+  }
+
+  @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
+  public void iRequestOnPort(String path, String port) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(Integer.parseInt(port))
+      .setPath(path)
+      .build();
+    httpGet = new HttpGet(uri);
+    response = httpclient.execute(httpGet);
   }
 }

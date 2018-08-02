@@ -1,7 +1,6 @@
 package server;
-import Request.Request;
 import Request.RequestFormatter;
-import Response.*;
+import Response.Response;
 
 import java.io.*;
 import java.net.*;
@@ -9,9 +8,10 @@ import java.nio.charset.StandardCharsets;
 
 public class Server {
 
-  private void go() throws IOException {
-    int PORT = 3000;
-    ServerSocket serverSocket = new ServerSocket(PORT);
+  public void go(String port) throws IOException {
+    System.out.println("Starting Server on PORT: " + port);
+
+    ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
 
     while (true) {
       Socket clientSocket = serverSocket.accept();
@@ -36,13 +36,12 @@ public class Server {
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
       String requestMethod = RequestFormatter.method(requestBuilder.toString());
       String requestBody = RequestFormatter.body(requestBuilder.toString());
-      System.out.println(requestMethod);
       switch(requestMethod) {
         case "GET":
-          out.write(new Status200("").response());
+          out.write(new Response(200,"").response());
           break;
         case "POST":
-            out.write(new Status200(requestBody).response());
+            out.write(new Response(200, requestBody).response());
           break;
         default:
           System.out.println("no match");
@@ -56,9 +55,5 @@ public class Server {
       System.out.println("Read failed");
       System.exit(-1);
     }
-  }
-
-  public static void main(String[] args) throws IOException {
-    new Server().go();
   }
 }
