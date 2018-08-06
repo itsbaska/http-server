@@ -1,25 +1,57 @@
 package Request;
 
 public class Request {
-  private final String method;
-  private final String path;
-  private final String body;
+  public String method;
+  public String path;
+  public String body;
+  public String fullRequestText;
 
-  public Request(String request) {
-    this.method = RequestFormatter.method(request);
-    this.path = RequestFormatter.path(request);
-    this.body = RequestFormatter.body(request);
+  public Request(String method, String path, String body, String fullRequestText) {
+    this.method = method;
+    this.path = path;
+    this.body = body;
+    this.fullRequestText = fullRequestText;
   }
 
-  public String method() {
-    return method;
-  }
+  public static class Builder {
+    private String method;
+    private String path;
+    private String body;
+    private String fullRequestText;
 
-  public String path() {
-    return path;
-  }
+    private Builder setMethod() {
+      String fullRequest[] = fullRequestText.split(": |\\r\\n");
+      this.method = fullRequest[0].split(" ")[0];
+      return this;
+    }
 
-  public String body() {
-    return body;
+    private Builder setPath() {
+      String fullRequest[] = fullRequestText.split(": |\\r\\n");
+      this.path = fullRequest[0].split(" ")[1];
+      return this;
+    }
+
+    private Builder setBody() {
+      String fullRequest[] = fullRequestText.split("\\r\\n\\r\\n");
+      if (fullRequest.length == 1) {
+        this.body = "";
+      } else {
+        this.body = fullRequest[1];
+      }
+      return this;
+    }
+
+    public Builder setFullRequest(String fullRequestText) {
+      this.fullRequestText = fullRequestText;
+      return this;
+    }
+
+    public Request build(String fullRequestText) {
+      setFullRequest(fullRequestText);
+      setBody();
+      setMethod();
+      setPath();
+      return new Request(method, path, body, fullRequestText);
+    }
   }
 }
