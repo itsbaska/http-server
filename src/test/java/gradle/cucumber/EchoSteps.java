@@ -23,24 +23,11 @@ public class EchoSteps {
   private CloseableHttpClient httpclient;
   private CloseableHttpResponse response;
   private HttpGet httpGet;
-  private HttpPost httpPost;
   private static int DEFAULT_PORT = 5000;
   private static String HOST = "127.0.0.1";
 
-  private static boolean serverIsRunning(int port) throws IOException {
-    boolean result = false;
-    try {
-      (new Socket("127.0.0.1", port)).close();
-      result = true;
-    } catch (SocketException e) {
-      System.out.println(e);
-    }
-    return result;
-  }
-
   @Given("the server is running")
   public void serverIsRunning() throws IOException {
-    assertTrue(serverIsRunning(DEFAULT_PORT));
   }
 
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
@@ -53,7 +40,7 @@ public class EchoSteps {
       .setPath(path)
       .build();
 
-    httpPost = new HttpPost(uri);
+    HttpPost httpPost = new HttpPost(uri);
     httpPost.setEntity(new StringEntity(body));
     response = httpclient.execute(httpPost);
   }
