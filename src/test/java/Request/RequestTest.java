@@ -1,7 +1,6 @@
-package request;
+package Request;
 
 import org.junit.Test;
-import Request.Request;
 
 import static org.junit.Assert.*;
 
