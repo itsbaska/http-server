@@ -1,23 +1,17 @@
 package Server;
-import Config.Route;
-import Config.Routes;
+import Controller.Controller;
 import Request.Request;
 import Response.Response;
-
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 public class Server {
+  Controller controller = new Controller();
 
   public void go(String port) throws IOException {
     System.out.println("Starting Server on PORT: " + port);
-
     ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
-
-    new Routes();
-    Routes.create();
 
     while (true) {
       Socket clientSocket = serverSocket.accept();
@@ -33,31 +27,15 @@ public class Server {
   private void handleRequest(Socket clientSocket) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
-
       StringBuilder requestBuilder = new StringBuilder();
       while (in.ready() || requestBuilder.length() == 0) {
         requestBuilder.append((char) in.read());
       }
-
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-
       Request request = new Request.Builder().build(requestBuilder.toString());
 
-      System.out.println(request.method + " <<< method");
-      System.out.println(request.path + " <<< path");
-      System.out.println(Routes.find(request).method + " <<<<<< Route was found");
-      System.out.println(Routes.find(request).path + " <<<<<< Route was found");
-
-      switch(request.method) {
-        case "GET":
-          out.write(new Response(200,"", 0).text);
-          break;
-        case "POST":
-            out.write(new Response(200, request.body, request.body.length()).text);
-          break;
-        default:
-          System.out.println("no match");
-      }
+      Response response = controller.handleRequest(request);
+      out.write(response.text);
 
       out.flush();
       out.close();
