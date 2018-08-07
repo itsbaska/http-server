@@ -1,45 +1,39 @@
-package Config;
-
+package Controller;
 import Request.Request;
+import Response.Response;
 
-import java.util.ArrayList;
+public class Controller {
+  public Response handleRequest(Request request) {
 
-public class Routes {
-  private static ArrayList<Route> routes;
-  public static void create() {
-    System.out.println("I got into crete");
-    routes = new ArrayList<>();
-    routes.add(new Route.Builder()
-      .setMethod("GET")
-      .setPath("/")
-      .build());
-    routes.add(new Route.Builder()
-      .setMethod("POST")
-      .setPath("/echo")
-      .build());
-    routes.add(new Route.Builder()
-      .setMethod("GET")
-      .setPath("/echo")
-      .build());
-    routes.add(new Route.Builder()
-      .setMethod("POST")
-      .setPath("/form")
-      .build());
-  }
-
-  public static ArrayList all() {
-    return routes;
-  }
-
-  public static Route find(Request request) {
-    Route foundRoute = null;
-
-    for (int i = 0; i < routes.size(); i++) {
-      if (routes.get(i).method.equals(request.method) &&
-          routes.get(i).path.equals(request.path)) {
-        foundRoute = routes.get(i);
-      }
+    Response response = null;
+    switch (request.path) {
+      case "/":
+        switch (request.method) {
+          case GET:
+            response = new Response.Builder()
+              .setStatusCode(200)
+              .setbody("")
+              .build();
+            break;
+        }
+        break;
+      case "/echo":
+        switch (request.method) {
+          case GET:
+            response = new Response.Builder()
+              .setStatusCode(200)
+              .setbody("")
+              .build();
+            break;
+          case POST:
+            response = new Response.Builder()
+              .setStatusCode(200)
+              .setbody(request.body)
+              .build();
+            break;
+        }
+        break;
     }
-    return foundRoute;
+    return response;
   }
 }
