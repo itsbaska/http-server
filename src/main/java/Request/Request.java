@@ -1,13 +1,15 @@
 package Request;
 
+import Config.Routes.Method;
+
 public class Request {
-  public String method;
+  public Method method;
   public String path;
   public String body;
   public String fullRequestText;
 
   public Request(String method, String path, String body, String fullRequestText) {
-    this.method = method;
+    this.method = Method.toMethod(method);
     this.path = path;
     this.body = body;
     this.fullRequestText = fullRequestText;

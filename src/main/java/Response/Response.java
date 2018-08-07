@@ -6,11 +6,11 @@ public class Response {
   public String body;
   public String text;
 
-  public Response(int statusCode, String body, int contentLength) {
+  public Response(int statusCode, String body) {
     String CRLF = "\r\n";
     this.statusCode = statusCode;
     this.body = body;
-    this.contentLength = contentLength;
+    this.contentLength = body.length();
     this.text =
       "HTTP/1.1 " + this.statusCode + CRLF +
         "Content-Length: " + this.contentLength + CRLF +
@@ -20,19 +20,13 @@ public class Response {
 
   public static class Builder {
     private int statusCode;
-    private int contentLength;
     private String body;
-
 
     public Builder setStatusCode(int code) {
       this.statusCode = code;
       return this;
     }
 
-    public Builder setContentLength() {
-      this.contentLength = this.body.length();
-      return this;
-    }
 
     public Builder setbody(String body) {
       this.body = body;
@@ -40,7 +34,7 @@ public class Response {
     }
 
     public Response build() {
-      return new Response(statusCode, body, contentLength);
+      return new Response(statusCode, body);
     }
   }
 }
