@@ -1,10 +1,13 @@
 package Server;
+import Config.Route;
+import Config.Routes;
 import Request.Request;
 import Response.Response;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Server {
 
@@ -12,6 +15,9 @@ public class Server {
     System.out.println("Starting Server on PORT: " + port);
 
     ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
+
+    new Routes();
+    Routes.create();
 
     while (true) {
       Socket clientSocket = serverSocket.accept();
@@ -36,6 +42,12 @@ public class Server {
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
       Request request = new Request.Builder().build(requestBuilder.toString());
+
+      System.out.println(request.method + " <<< method");
+      System.out.println(request.path + " <<< path");
+      System.out.println(Routes.find(request).method + " <<<<<< Route was found");
+      System.out.println(Routes.find(request).path + " <<<<<< Route was found");
+
       switch(request.method) {
         case "GET":
           out.write(new Response(200,"", 0).text);

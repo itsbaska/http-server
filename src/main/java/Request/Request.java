@@ -13,6 +13,7 @@ public class Request {
     this.fullRequestText = fullRequestText;
   }
 
+
   public static class Builder {
     private String method;
     private String path;
