@@ -1,6 +1,6 @@
 package Request;
 
-import Config.Routes.Method;
+import Config.Method;
 
 public class Request {
   public Method method;

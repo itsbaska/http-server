@@ -1,4 +1,4 @@
-package Config.Routes;
+package Config;
 
 public enum Method {
   GET,

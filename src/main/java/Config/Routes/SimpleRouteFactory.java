@@ -1,15 +1,18 @@
 package Config.Routes;
 
-import static Config.Routes.Method.*;
+import Config.Method;
+import Controller.Handler.Handler;
+
+import static Config.Method.*;
 
 public class SimpleRouteFactory {
 
-	public Route createRoute(Method method, String path) {
+	public Route createRoute(Method method, String path, Handler handler) {
 		Route route = null;
 		if (method == GET) {
-			route = new GetRoute(method, path);
+			route = new GetRoute(method, path, handler);
 		} else if (method == POST) {
-			route = new PostRoute(method, path);
+			route = new PostRoute(method, path, handler);
 		}
 		return route;
 	}
