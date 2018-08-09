@@ -1,4 +1,4 @@
-package Config.Handler;
+package Controller.Handler;
 import Request.Request;
 
 import static Config.Routes.Method.GET;

@@ -15,14 +15,17 @@ import static Validator.Validator.validArgsLength;
 import static Validator.Validator.validFlag;
 
 public class Config {
-  private ArrayList<Route> routes = new ArrayList<>();
-  public void createRoutes() {
+  public static ArrayList<Route> routes = new ArrayList<>();
+  public static void createRoutes() {
     SimpleRouteFactory factory = new SimpleRouteFactory();
     RouteFactory routeFactory = new RouteFactory(factory);
-
     routes.add(routeFactory.createRoute(GET, "/"));
     routes.add(routeFactory.createRoute(GET, "/echo"));
     routes.add(routeFactory.createRoute(POST, "/echo"));
+  }
+
+  public static ArrayList<Route> allRoutes() {
+    return routes;
   }
 
   public static String setPort(String[] args) throws IOException {
