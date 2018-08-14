@@ -36,6 +36,13 @@ repositories {
     mavenCentral()
 
 }
+apply plugin: 'java'
+
+task run(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'StartServer'
+    args '-p','5000'
+}
 
 task cucumber() {
     dependsOn assemble, compileTestJava
