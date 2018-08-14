@@ -46,9 +46,9 @@ public class Config {
     String port = null;
     if (validArgsLength(args) && validFlag(args)) {
       String chosenPort = args[1];
-      if (portIsAvailable(chosenPort)) {
+      if (portIsNotAvailable(chosenPort)) {
         System.err.println("PORT: " + chosenPort + " is already in use.");
-        port = null;
+        System.exit(1);
       } else {
         System.out.println("PORT: " + chosenPort);
         System.out.println("Success!");
@@ -58,7 +58,7 @@ public class Config {
     return port;
   }
 
-  public static boolean portIsAvailable(String port) throws IOException {
+  public static boolean portIsNotAvailable(String port) throws IOException {
     try {
       (new Socket("127.0.0.1", Integer.parseInt(port))).close();
       return true;
