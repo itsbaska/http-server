@@ -1,3 +1,4 @@
+@conf
 Feature: Configuration
   Scenario: Changing port
     Given I am in a console shell
