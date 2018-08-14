@@ -2,20 +2,19 @@ package Config;
 
 import Config.Routes.Route;
 import Config.Routes.RouteFactory;
-import Config.Routes.SimpleRouteFactory;
 import Controller.Handler.GetEchoHandle;
 import Controller.Handler.GetHandle;
 import Controller.Handler.Handler;
 import Controller.Handler.PostEchoHandle;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
+
 import java.util.ArrayList;
 
 import static Config.Method.GET;
 import static Config.Method.POST;
 
+import static Validator.Validator.portIsNotAvailable;
 import static Validator.Validator.validArgsLength;
 import static Validator.Validator.validFlag;
 
@@ -24,11 +23,10 @@ public class Config {
   public static ArrayList<Handler> handlers = new ArrayList<>();
 
   public static void createRoutes() {
-    SimpleRouteFactory factory = new SimpleRouteFactory();
-    RouteFactory routeFactory = new RouteFactory(factory);
-    routes.add(routeFactory.createRoute(GET, "/", new GetHandle()));
-    routes.add(routeFactory.createRoute(GET, "/echo", new GetEchoHandle()));
-    routes.add(routeFactory.createRoute(POST, "/echo", new PostEchoHandle()));
+    RouteFactory factory = new RouteFactory();
+    routes.add(factory.createRoute(GET, "/", new GetHandle()));
+    routes.add(factory.createRoute(GET, "/echo", new GetEchoHandle()));
+    routes.add(factory.createRoute(POST, "/echo", new PostEchoHandle()));
   }
 
   public static ArrayList<Handler> allHandlers() {
@@ -56,14 +54,5 @@ public class Config {
       }
     }
     return port;
-  }
-
-  public static boolean portIsNotAvailable(String port) throws IOException {
-    try {
-      (new Socket("127.0.0.1", Integer.parseInt(port))).close();
-      return true;
-    } catch (SocketException ignored) {
-      return false;
-    }
   }
 }
