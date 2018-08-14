@@ -2,6 +2,7 @@ package Request;
 
 import org.junit.Test;
 
+import static Config.Method.POST;
 import static org.junit.Assert.*;
 
 public class RequestTest {
@@ -46,7 +47,7 @@ public class RequestTest {
       "content-length: 7" + CRLF + CRLF +
       "goodbye";
     Request request = new Request.Builder().build(incomingRequest);
-    assertEquals("POST", request.method);
+    assertEquals(POST, request.method);
   }
 
   @Test

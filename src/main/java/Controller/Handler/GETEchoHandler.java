@@ -1,18 +1,15 @@
 package Controller.Handler;
+
 import Request.Request;
 import Response.Response;
 import Config.Method;
 
-public class GetHandle extends Handler {
-  public Method method;
-  public String path;
-
-  public GetHandle() {
+public class GETEchoHandler extends Handler {
+  public GETEchoHandler() {
     this.method = Method.GET;
-    this.path = "/";
+    this.path = "/echo";
   }
 
-  @Override
   public Response handle(Request request) {
     return new Response.Builder()
       .setbody("")

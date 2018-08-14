@@ -2,10 +2,10 @@ package Config;
 
 import Config.Routes.Route;
 import Config.Routes.RouteFactory;
-import Controller.Handler.GetEchoHandle;
-import Controller.Handler.GetHandle;
+import Controller.Handler.GETEchoHandler;
+import Controller.Handler.GETHandler;
 import Controller.Handler.Handler;
-import Controller.Handler.PostEchoHandle;
+import Controller.Handler.POSTEchoHandler;
 
 import java.io.IOException;
 
@@ -20,20 +20,12 @@ import static Validator.Validator.validFlag;
 
 public class Config {
   public static ArrayList<Route> routes = new ArrayList<>();
-  public static ArrayList<Handler> handlers = new ArrayList<>();
 
   public static void createRoutes() {
     RouteFactory factory = new RouteFactory();
-    routes.add(factory.createRoute(GET, "/", new GetHandle()));
-    routes.add(factory.createRoute(GET, "/echo", new GetEchoHandle()));
-    routes.add(factory.createRoute(POST, "/echo", new PostEchoHandle()));
-  }
-
-  public static ArrayList<Handler> allHandlers() {
-    handlers.add(new GetHandle());
-    handlers.add(new GetEchoHandle());
-    handlers.add(new PostEchoHandle());
-    return handlers;
+    routes.add(factory.createRoute(GET, "/", new GETHandler()));
+    routes.add(factory.createRoute(GET, "/echo", new GETEchoHandler()));
+    routes.add(factory.createRoute(POST, "/echo", new POSTEchoHandler()));
   }
 
   public static ArrayList<Route> allRoutes() {

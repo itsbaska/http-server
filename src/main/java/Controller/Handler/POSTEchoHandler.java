@@ -1,18 +1,17 @@
 package Controller.Handler;
+import Config.Method;
 import Request.Request;
 import Response.Response;
-import Config.Method;
 
-public class GetEchoHandle extends Handler {
-  public GetEchoHandle() {
-    this.method = Method.GET;
+public class POSTEchoHandler extends Handler{
+  public POSTEchoHandler() {
+    this.method = Method.POST;
     this.path = "/echo";
   }
 
-  @Override
   public Response handle(Request request) {
     return new Response.Builder()
-      .setbody("")
+      .setbody(request.body)
       .setStatusCode(200)
       .build();
   }
