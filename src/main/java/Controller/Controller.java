@@ -1,26 +1,22 @@
 package Controller;
 import Config.Config;
 import Config.Routes.Route;
+import Config.Routes.Routes;
 import Request.Request;
 import Response.Response;
 
-import java.util.ArrayList;
 
 public class Controller {
+  public Routes routes;
+
+  public Controller() {
+    this.routes = Config.setRoutes();
+  }
 
   public Response handleRequest(Request request) {
-    Route route = getRoute(request);
+    Route route = routes.find(request);
     return route.handler.handle(request);
   }
 
-  private static Route getRoute(Request request) {
-    ArrayList<Route> routes = Config.allRoutes();
-    Route requestedRoute = null;
-    for (Route route : routes) {
-      if (route.getMethod().equals(request.method) && route.getPath().equals(request.path)) {
-        requestedRoute = route;
-      }
-    }
-    return requestedRoute;
-  }
+
 }

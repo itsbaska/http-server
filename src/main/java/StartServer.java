@@ -8,7 +8,7 @@ public class StartServer {
 //    Config config = new Config();
     //    config.createRoutes();
     String port = Config.setPort(args);
-    Config.createRoutes();
+//    Config.createRoutes();
     new Server().go(port);
   }
 }
