@@ -44,7 +44,7 @@ public class EchoSteps {
   }
 
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iTo(String body, String path) throws Throwable {
+  public void iPostTo(String body, String path) throws Throwable {
     httpclient = HttpClients.createDefault();
     URI uri = new URIBuilder()
       .setScheme("http")
@@ -111,5 +111,20 @@ public class EchoSteps {
       .build();
     httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
+  }
+
+  @When("^I \"PUT\"([^\"]*)\" to \"([^\"]*)\"$")
+  public void iPutTo(String body, String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+
+    HttpPost httpPost = new HttpPost(uri);
+    httpPost.setEntity(new StringEntity(body));
+    response = httpclient.execute(httpPost);
   }
 }
