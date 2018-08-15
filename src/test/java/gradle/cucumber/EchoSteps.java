@@ -1,5 +1,7 @@
 package gradle.cucumber;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,33 +16,31 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class EchoSteps {
   private CloseableHttpClient httpclient;
   private CloseableHttpResponse response;
   private HttpGet httpGet;
-  private HttpPost httpPost;
-  private static int DEFAULT_PORT = 5000;
+  private static int DEFAULT_PORT = 3000;
   private static String HOST = "127.0.0.1";
 
-  private static boolean serverIsRunning(int port) throws IOException {
-    boolean result = false;
-    try {
-      (new Socket("127.0.0.1", port)).close();
-      result = true;
-    } catch (SocketException e) {
-      System.out.println(e);
-    }
-    return result;
+  @Before("not @configurePort")
+  public void beforeScenario() throws IOException {
+    System.out.println("This will run before the Scenario");
+    Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");
+    Runtime.getRuntime().exec("java -cp src/main/java StartServer -p " + DEFAULT_PORT);
+  }
+
+  @After
+  public void afterScenario() {
+    System.out.println("This will run after the Scenario");
   }
 
   @Given("the server is running")
-  public void serverIsRunning() throws IOException {
-    assertTrue(serverIsRunning(DEFAULT_PORT));
+  public void serverIsRunning() {
   }
 
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
@@ -53,7 +53,7 @@ public class EchoSteps {
       .setPath(path)
       .build();
 
-    httpPost = new HttpPost(uri);
+    HttpPost httpPost = new HttpPost(uri);
     httpPost.setEntity(new StringEntity(body));
     response = httpclient.execute(httpPost);
   }
@@ -79,7 +79,7 @@ public class EchoSteps {
   }
 
   @Then("^the response status should be (\\d+)$")
-  public void theResponseStatusShouldBe(int status) throws Throwable {
+  public void theResponseStatusShouldBe(int status) {
     assertEquals(status, response.getStatusLine().getStatusCode());
   }
 
@@ -91,15 +91,13 @@ public class EchoSteps {
   }
 
   @Given("^I am in a console shell$")
-  public void iAmInAConsoleShell() throws Throwable {
-    Runtime.getRuntime()
-    .exec("javac -cp src/main/java/StartServer.java ");
+  public void iAmInAConsoleShell() {
   }
 
   @When("^I start the server with the option \"([^\"]*)\"$")
   public void iStartTheServerWithTheOption(String option) throws Throwable {
-    Runtime.getRuntime()
-    .exec("java -cp src/main/java StartServer " + option);
+    Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");
+    Runtime.getRuntime().exec("java -cp src/main/java StartServer " + option);
   }
 
   @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")

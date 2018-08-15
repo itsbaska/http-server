@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class ResponseTest {
   @Test
   public void testResponseObject() {
-    Response response = new Response(200, "hello", 5);
+    Response response = new Response(200, "hello");
     assertEquals(response.text, "HTTP/1.1 200\r\n" +
       "Content-Length: 5\r\n" +
       "Content-Type: text/html\r\n" +
@@ -20,7 +20,6 @@ public class ResponseTest {
     Response response = new Response.Builder()
       .setbody("hello")
       .setStatusCode(200)
-      .setContentLength()
       .build();
     assertEquals(response.text, "HTTP/1.1 200\r\n" +
       "Content-Length: 5\r\n" +
@@ -34,7 +33,6 @@ public class ResponseTest {
     Response response = new Response.Builder()
       .setbody("hello")
       .setStatusCode(200)
-      .setContentLength()
       .build();
     assertEquals(response.body,"hello");
   }
@@ -44,7 +42,6 @@ public class ResponseTest {
     Response response = new Response.Builder()
       .setbody("hello")
       .setStatusCode(200)
-      .setContentLength()
       .build();
     assertEquals(response.statusCode, 200);
   }
