@@ -27,7 +27,7 @@ public class EchoSteps {
   private static int DEFAULT_PORT = 3000;
   private static String HOST = "127.0.0.1";
 
-  @Before("not @conf")
+  @Before("not @configurePort")
   public void beforeScenario() throws IOException {
     System.out.println("This will run before the Scenario");
     Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");

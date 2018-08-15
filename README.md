@@ -18,13 +18,14 @@ $ git clone git@github.com:itsbaska/http-server.git
 
 Running server on default PORT 5000:
 ```
-$ cd http-server/src/main/java && javac StartServer.java
+$ cd http-server
 $ gradle run
 ```
 
 Running server on custom PORT:
 ```
-$ cd http-server/src/main/java && javac StartServer.java
+$ cd http-server/src/main/java
+$ javac StartServer.java
 $ java StartServer -p [PORT]
 ```
 ## Running Tests
