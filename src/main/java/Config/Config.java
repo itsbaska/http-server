@@ -2,20 +2,12 @@ package Config;
 
 import Config.Routes.RouteFactory;
 import Config.Routes.Routes;
-import Controller.Handler.GETEchoHandler;
-import Controller.Handler.GETHandler;
-import Controller.Handler.OPTIONSHandler;
-import Controller.Handler.POSTEchoHandler;
+import Controller.Handler.*;
 
 import java.io.IOException;
 
-import static Config.Method.GET;
-import static Config.Method.OPTIONS;
-import static Config.Method.POST;
-
-import static Validator.Validator.portIsNotAvailable;
-import static Validator.Validator.validArgsLength;
-import static Validator.Validator.validFlag;
+import static Config.Method.*;
+import static Validator.Validator.*;
 
 public class Config {
   public static Routes setRoutes() {
@@ -25,6 +17,8 @@ public class Config {
     routes.add(factory.createRoute(GET, "/echo", new GETEchoHandler()));
     routes.add(factory.createRoute(POST, "/echo", new POSTEchoHandler()));
     routes.add(factory.createRoute(OPTIONS, "/method_options", new OPTIONSHandler()));
+    routes.add(factory.createRoute(OPTIONS, "/method_options2", new OPTIONS2Handler()));
+
 
     return routes;
   }
