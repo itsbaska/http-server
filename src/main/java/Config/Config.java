@@ -4,11 +4,13 @@ import Config.Routes.RouteFactory;
 import Config.Routes.Routes;
 import Controller.Handler.GETEchoHandler;
 import Controller.Handler.GETHandler;
+import Controller.Handler.OPTIONSHandler;
 import Controller.Handler.POSTEchoHandler;
 
 import java.io.IOException;
 
 import static Config.Method.GET;
+import static Config.Method.OPTIONS;
 import static Config.Method.POST;
 
 import static Validator.Validator.portIsNotAvailable;
@@ -22,6 +24,8 @@ public class Config {
     routes.add(factory.createRoute(GET, "/", new GETHandler()));
     routes.add(factory.createRoute(GET, "/echo", new GETEchoHandler()));
     routes.add(factory.createRoute(POST, "/echo", new POSTEchoHandler()));
+    routes.add(factory.createRoute(OPTIONS, "/method_options", new OPTIONSHandler()));
+
     return routes;
   }
 
