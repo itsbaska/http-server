@@ -20,13 +20,11 @@ public class Response {
   }
 
   public String stringify() {
-    String text = "HTTP/1.1 " + this.statusCode + CRLF +
+    return "HTTP/1.1 " + this.statusCode + CRLF +
       formatHeaders(this.headers) +
       "Content-Length: " + this.contentLength + CRLF +
       "Content-Type: text/html" + CRLF + CRLF +
       this.body;
-
-    return text;
   }
 
   private String formatHeaders(HashMap<String, String> headers) {
@@ -37,8 +35,6 @@ public class Response {
       Object value = entry.getValue();
       formattedHeader += header.toString() + ": " + value.toString() + CRLF;
     }
-    System.out.println("Inside formatter");
-    System.out.println(formattedHeader);
     return formattedHeader;
   }
 
