@@ -1,13 +1,15 @@
 package gradle.cucumber;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HeaderIterator;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -17,8 +19,11 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EchoSteps {
   private CloseableHttpClient httpclient;
@@ -26,18 +31,6 @@ public class EchoSteps {
   private HttpGet httpGet;
   private static int DEFAULT_PORT = 3000;
   private static String HOST = "127.0.0.1";
-
-  @Before("not @configurePort")
-  public void beforeScenario() throws IOException {
-    System.out.println("This will run before the Scenario");
-    Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");
-    Runtime.getRuntime().exec("java -cp src/main/java StartServer -p " + DEFAULT_PORT);
-  }
-
-  @After
-  public void afterScenario() {
-    System.out.println("This will run after the Scenario");
-  }
 
   @Given("the server is running")
   public void serverIsRunning() {
@@ -111,5 +104,32 @@ public class EchoSteps {
       .build();
     httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
+  }
+
+  @When("^I request \"OPTIONS\" \"([^\"]*)\"$")
+  public void iRequestOptions(String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+    HttpOptions httpOptions = new HttpOptions(uri);
+    response = httpclient.execute(httpOptions);
+  }
+
+  @And("^the response header should include \"Allow\" \"([^\"]*)\"$")
+  public void theResponseHeaderShouldInclude(String option) {
+    HeaderIterator it = response.headerIterator("Allow");
+    Set<String> methods = new HashSet<>();
+    while (it.hasNext()) {
+      Header header = it.nextHeader();
+      HeaderElement[] elements = header.getElements();
+      for (HeaderElement element : elements) {
+        methods.add(element.getName());
+      }
+    }
+    assertTrue(methods.contains(option));
   }
 }
