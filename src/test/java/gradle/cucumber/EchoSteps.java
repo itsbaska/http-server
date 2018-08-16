@@ -6,18 +6,26 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
+import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
 import static org.junit.Assert.assertEquals;
 
 public class EchoSteps {
@@ -44,7 +52,7 @@ public class EchoSteps {
   }
 
   @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iTo(String body, String path) throws Throwable {
+  public void iPostTo(String body, String path) throws Throwable {
     httpclient = HttpClients.createDefault();
     URI uri = new URIBuilder()
       .setScheme("http")
@@ -111,5 +119,23 @@ public class EchoSteps {
       .build();
     httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
+  }
+
+  @When("^I \"PUT\" \"([^\"]*)\" to \"([^\"]*)\"$")
+  public void iPutTo(String body, String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+
+    HttpPut httpPut = new HttpPut(uri);
+    List<NameValuePair> formParams = new ArrayList<>();
+    formParams.add(new BasicNameValuePair(parseFormData(body)[0], parseFormData(body)[1]));
+    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
+    httpPut.setEntity(entity);
+    response = httpclient.execute(httpPut);
   }
 }
