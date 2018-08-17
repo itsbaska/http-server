@@ -14,8 +14,7 @@ public class RoutesTest {
   @Test
   public void add() {
     Routes routes = new Routes();
-    RouteFactory factory = new RouteFactory();
-    Route route = factory.createRoute(GET, "/", new GETHandler());
+    Route route = new Route(GET, "/", new GETHandler());
     routes.add(route);
     assertEquals(routes.getRoutes().get(0), route);
   }
@@ -23,8 +22,7 @@ public class RoutesTest {
   @Test
   public void getRoutes() {
     Routes routes = new Routes();
-    RouteFactory factory = new RouteFactory();
-    Route route = factory.createRoute(GET, "/echo", new GETEchoHandler());
+    Route route = new Route(GET, "/echo", new GETEchoHandler());
     routes.add(route);
     assertTrue(routes.getRoutes().contains(route));
   }

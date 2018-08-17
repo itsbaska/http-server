@@ -1,6 +1,5 @@
 package Controller.Handler;
 
-import Config.Routes.GETRoute;
 import Request.Request;
 import org.junit.Test;
 import static Config.Method.GET;
