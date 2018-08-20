@@ -16,6 +16,8 @@ public class RouteFactory {
 	  		  return new PUTRoute(method, path, handler);
         case OPTIONS:
           return new OPTIONSRoute(method, path, handler);
+        case HEAD:
+          return new HEADRoute(method, path, handler);
         default:
           throw new Error();
       }

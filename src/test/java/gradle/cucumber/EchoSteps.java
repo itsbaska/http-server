@@ -4,17 +4,9 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HeaderIterator;
-import org.apache.http.Consts;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -24,10 +16,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
 import static org.junit.Assert.assertEquals;
@@ -74,8 +66,10 @@ public class EchoSteps {
 
   @And("the response body should be empty")
   public void the_response_body_should_be_empty() throws IOException {
-    String responseBody;
-    responseBody = new BasicResponseHandler().handleResponse(response);
+    String responseBody = new BasicResponseHandler().handleResponse(response);
+    if (responseBody == null) {
+      responseBody = "";
+    }
     assertEquals("", responseBody);
   }
 
@@ -157,5 +151,18 @@ public class EchoSteps {
     UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
     httpPut.setEntity(entity);
     response = httpclient.execute(httpPut);
+  }
+
+  @When("^I request \"HEAD\" \"([^\"]*)\"$")
+  public void iRequestHead(String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+    HttpHead httpHead = new HttpHead(uri);
+    response = httpclient.execute(httpHead);
   }
 }

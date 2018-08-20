@@ -7,15 +7,6 @@ import Controller.Handler.*;
 import java.io.IOException;
 
 import static Config.Method.*;
-import Controller.Handler.GETEchoHandler;
-import Controller.Handler.GETHandler;
-import Controller.Handler.OPTIONSHandler;
-import Controller.Handler.POSTEchoHandler;
-import Controller.Handler.PUTFormHandler;
-import Controller.Handler.POSTFormHandler;
-
-import java.io.IOException;
-
 import static Validator.Validator.*;
 
 public class Config {
@@ -29,6 +20,8 @@ public class Config {
     routes.add(factory.createRoute(POST, "/form", new POSTFormHandler()));
     routes.add(factory.createRoute(OPTIONS, "/method_options", new OPTIONSHandler()));
     routes.add(factory.createRoute(OPTIONS, "/method_options2", new OPTIONS2Handler()));
+    routes.add(factory.createRoute(HEAD, "/", new HEAD200Handler()));
+
     return routes;
   }
 
