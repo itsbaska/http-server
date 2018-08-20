@@ -6,16 +6,17 @@ import Controller.Handler.GETEchoHandler;
 import Controller.Handler.GETHandler;
 import Controller.Handler.OPTIONSHandler;
 import Controller.Handler.POSTEchoHandler;
+import Controller.Handler.PUTFormHandler;
+import Controller.Handler.POSTFormHandler;
 
 import java.io.IOException;
 
 import static Config.Method.GET;
 import static Config.Method.OPTIONS;
 import static Config.Method.POST;
+import static Config.Method.PUT;
 
-import static Validator.Validator.portIsNotAvailable;
-import static Validator.Validator.validArgsLength;
-import static Validator.Validator.validFlag;
+import static Validator.Validator.*;
 
 public class Config {
   public static Routes setRoutes() {
@@ -25,7 +26,8 @@ public class Config {
     routes.add(factory.createRoute(GET, "/echo", new GETEchoHandler()));
     routes.add(factory.createRoute(POST, "/echo", new POSTEchoHandler()));
     routes.add(factory.createRoute(OPTIONS, "/method_options", new OPTIONSHandler()));
-
+    routes.add(factory.createRoute(PUT, "/form", new PUTFormHandler()));
+    routes.add(factory.createRoute(POST, "/form", new POSTFormHandler()));
     return routes;
   }
 
