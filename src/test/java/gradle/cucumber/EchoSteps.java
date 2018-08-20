@@ -14,8 +14,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -71,6 +69,18 @@ public class EchoSteps {
     response = httpclient.execute(httpGet);
   }
 
+  @Then("^the response status should be (\\d+)$")
+  public void theResponseStatusShouldBe(int status) {
+    assertEquals(status, response.getStatusLine().getStatusCode());
+  }
+
+  @And("^the response body should be \"([^\"]*)\"$")
+  public void theResponseBodyShouldBe(String responseBody) throws IOException {
+    String responseBody1;
+    responseBody1 = new BasicResponseHandler().handleResponse(response);
+    assertEquals(responseBody, responseBody1);
+  }
+
   @When("^I \"PUT\" \"([^\"]*)\" to \"([^\"]*)\"$")
   public void iPutTo(String body, String path) throws Throwable {
     httpclient = HttpClients.createDefault();
@@ -105,35 +115,23 @@ public class EchoSteps {
       .setPort(DEFAULT_PORT)
       .setPath(path)
       .build();
-      HttpOptions httpOptions = new HttpOptions(uri);
+    HttpOptions httpOptions = new HttpOptions(uri);
     response = httpclient.execute(httpOptions);
   }
 
-  @Then("^the response status should be (\\d+)$")
-  public void theResponseStatusShouldBe(int status) {
-    assertEquals(status, response.getStatusLine().getStatusCode());
-  }
-  @Rule
-  public ExpectedException exceptionRule = ExpectedException.none();
-
-
   @And("the response body should be empty")
-  public void theResponseBodyShouldBeEmpty()  throws Throwable {
+  public void theResponseBodyShouldBeEmpty() throws Throwable {
     String responseBody;
     try {
       responseBody = new BasicResponseHandler().handleResponse(response);
+      if (responseBody == null) {
+        responseBody = "";
+      }
     } catch (HttpResponseException e) {
       System.err.println(e.getMessage());
       responseBody = e.getMessage();
     }
     assertEquals("", responseBody);
-  }
-
-  @And("^the response body should be \"([^\"]*)\"$")
-  public void theResponseBodyShouldBe(String responseBody) throws IOException {
-    String responseBody1;
-    responseBody1 = new BasicResponseHandler().handleResponse(response);
-    assertEquals(responseBody, responseBody1);
   }
 
   @And("^the response header should include \"Allow\" \"([^\"]*)\"$")
@@ -161,5 +159,18 @@ public class EchoSteps {
       .build();
     httpGet = new HttpGet(uri);
     response = httpclient.execute(httpGet);
+  }
+
+  @When("^I request \"HEAD\" \"([^\"]*)\"$")
+  public void iRequestHead(String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
+    HttpHead httpHead = new HttpHead(uri);
+    response = httpclient.execute(httpHead);
   }
 }

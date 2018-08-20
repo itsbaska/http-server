@@ -2,24 +2,11 @@ package Controller.Handler;
 
 import Request.Request;
 import org.junit.Test;
-import static Config.Method.GET;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GETHandlerTest {
   private String CRLF = "\r\n";
-
-  @Test
-  public void testGETHandlerPath() {
-    Handler handler = new GETHandler();
-    assertEquals("/", ((GETHandler) handler).path);
-  }
-
-  @Test
-  public void testGETHandlerMethod() {
-    Handler handler = new GETHandler();
-    assertEquals(GET, ((GETHandler) handler).method);
-  }
 
   @Test
   public void handlerReturnResponseBody() {
