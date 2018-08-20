@@ -3,8 +3,6 @@ package Config.Routes;
 import Config.Method;
 import Controller.Handler.Handler;
 
-import static Config.Method.*;
-
 public class RouteFactory {
 
 	public Route createRoute(Method method, String path, Handler handler) {
@@ -14,6 +12,8 @@ public class RouteFactory {
           return new GETRoute(method, path, handler);
         case POST:
           return new POSTRoute(method, path, handler);
+        case PUT:
+	  		  return new PUTRoute(method, path, handler);
         case OPTIONS:
           return new OPTIONSRoute(method, path, handler);
         default:
