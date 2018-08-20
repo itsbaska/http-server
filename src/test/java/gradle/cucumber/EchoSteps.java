@@ -116,6 +116,13 @@ public class EchoSteps {
 
   @When("^I request \"OPTIONS\" \"([^\"]*)\"$")
   public void iRequestOptions(String path) throws Throwable {
+    httpclient = HttpClients.createDefault();
+    URI uri = new URIBuilder()
+      .setScheme("http")
+      .setHost(HOST)
+      .setPort(DEFAULT_PORT)
+      .setPath(path)
+      .build();
       HttpOptions httpOptions = new HttpOptions(uri);
     response = httpclient.execute(httpOptions);
   }

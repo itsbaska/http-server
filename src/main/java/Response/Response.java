@@ -27,7 +27,7 @@ public class Response {
   private String setBody(String body) {
     String responseBody = "";
       if (body != null) {
-        responseBody =  body;
+        responseBody = body;
       }
       return responseBody;
   }
@@ -66,5 +66,7 @@ public class Response {
     public Response build() {
       return new Response(this);
     }
+
+
   }
 }

@@ -13,7 +13,7 @@ public class POSTFormHandler extends Handler {
 
   public Response handle(Request request) {
     return new Response.Builder()
-      .setbody("")
+      .setBody("")
       .setStatusCode(201)
       .build();
   }

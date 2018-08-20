@@ -12,7 +12,7 @@ public class PUTFormHandler extends Handler {
 
   public Response handle(Request request) {
     return new Response.Builder()
-      .setbody("")
+      .setBody("")
       .setStatusCode(202)
       .build();
   }
