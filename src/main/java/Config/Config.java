@@ -21,6 +21,7 @@ public class Config {
     routes.add(new Route(OPTIONS, "/method_options2", new OPTIONS2Handler()));
     routes.add(new Route(GET, "/not-found", new NotFoundHandler()));
     routes.add(new Route(HEAD, "/", new HEAD200Handler()));
+    routes.add(new Route(HEAD, "/foobar", new HEAD404Handler()));
     return routes;
   }
 
