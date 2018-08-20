@@ -35,7 +35,7 @@ public class Server {
       Request request = new Request.Builder().build(requestBuilder.toString());
 
       Response response = controller.handleRequest(request);
-      out.write(response.text);
+      out.write(response.stringify());
 
       out.flush();
       out.close();

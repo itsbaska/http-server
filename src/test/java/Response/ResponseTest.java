@@ -5,10 +5,14 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class ResponseTest {
+
   @Test
-  public void testResponseObject() {
-    Response response = new Response(200, "hello");
-    assertEquals(response.text, "HTTP/1.1 200\r\n" +
+  public void testResponseStringify() {
+    Response response = new Response.Builder()
+      .setbody("hello")
+      .setStatusCode(200)
+      .build();
+    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
       "Content-Length: 5\r\n" +
       "Content-Type: text/html\r\n" +
       "\r\n" +
@@ -16,17 +20,21 @@ public class ResponseTest {
   }
 
   @Test
-  public void testResponseText() {
+  public void testResponseStringifyWithHeaders() {
     Response response = new Response.Builder()
       .setbody("hello")
+      .setHeader("Allow", "GET")
       .setStatusCode(200)
       .build();
-    assertEquals(response.text, "HTTP/1.1 200\r\n" +
+    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
+      "Allow: GET\r\n" +
       "Content-Length: 5\r\n" +
       "Content-Type: text/html\r\n" +
       "\r\n" +
       "hello");
   }
+
+
 
   @Test
   public void testResponseBody() {

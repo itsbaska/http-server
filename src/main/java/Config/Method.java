@@ -2,8 +2,9 @@ package Config;
 
 public enum Method {
   GET,
-  POST,
-  PUT;
+  POST, 
+  PUT,
+  OPTIONS;
 
   public static Method toMethod(String stringMethod) {
     switch (stringMethod) {
@@ -11,6 +12,8 @@ public enum Method {
         return GET;
       case "POST":
         return POST;
+      case "OPTIONS":
+        return OPTIONS;
       case "PUT":
         return PUT;
       default:
