@@ -9,7 +9,7 @@ public class ResponseTest {
   @Test
   public void testResponseStringify() {
     Response response = new Response.Builder()
-      .setbody("hello")
+      .setBody("hello")
       .setStatusCode(200)
       .build();
     assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
@@ -22,7 +22,7 @@ public class ResponseTest {
   @Test
   public void testResponseStringifyWithHeaders() {
     Response response = new Response.Builder()
-      .setbody("hello")
+      .setBody("hello")
       .setHeader("Allow", "GET")
       .setStatusCode(200)
       .build();
@@ -34,12 +34,22 @@ public class ResponseTest {
       "hello");
   }
 
+  @Test
+  public void testResponseWithoutBody() {
+    Response response = new Response.Builder()
+      .setHeader("Allow", "GET")
+      .setStatusCode(200)
+      .build();
+    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
+      "Allow: GET\r\n" +
+      "\r\n");
+  }
 
 
   @Test
   public void testResponseBody() {
     Response response = new Response.Builder()
-      .setbody("hello")
+      .setBody("hello")
       .setStatusCode(200)
       .build();
     assertEquals(response.body,"hello");
@@ -48,7 +58,7 @@ public class ResponseTest {
   @Test
   public void testResponseStatusCode() {
     Response response = new Response.Builder()
-      .setbody("hello")
+      .setBody("hello")
       .setStatusCode(200)
       .build();
     assertEquals(response.statusCode, 200);

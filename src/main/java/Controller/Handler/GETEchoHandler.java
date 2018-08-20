@@ -12,8 +12,10 @@ public class GETEchoHandler extends Handler {
 
   public Response handle(Request request) {
     return new Response.Builder()
-      .setbody("")
       .setStatusCode(200)
+      .setBody("")
+      .setHeader("Content-Length", "0")
+      .setHeader("Content-Type", "text/html")
       .build();
   }
 }

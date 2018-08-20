@@ -15,16 +15,21 @@ public class Response {
   public Response(Builder builder) {
     this.statusCode = builder.statusCode;
     this.body = builder.body;
-    this.contentLength = builder.body.length();
     this.headers = builder.headers;
   }
 
   public String stringify() {
     return "HTTP/1.1 " + this.statusCode + CRLF +
-      formatHeaders(this.headers) +
-      "Content-Length: " + this.contentLength + CRLF +
-      "Content-Type: text/html" + CRLF + CRLF +
-      this.body;
+      formatHeaders(this.headers) + CRLF +
+      setBody(this.body);
+  }
+
+  private String setBody(String body) {
+    String responseBody = "";
+      if (body != null) {
+        responseBody =  body;
+      }
+      return responseBody;
   }
 
   private String formatHeaders(HashMap<String, String> headers) {
@@ -53,7 +58,7 @@ public class Response {
       return this;
     }
 
-    public Builder setbody(String body) {
+    public Builder setBody(String body) {
       this.body = body;
       return this;
     }
