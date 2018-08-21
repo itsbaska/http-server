@@ -7,7 +7,6 @@ public enum Method {
   OPTIONS,
   HEAD;
 
-
   public static Method toMethod(String stringMethod) {
     switch (stringMethod) {
       case "GET":
