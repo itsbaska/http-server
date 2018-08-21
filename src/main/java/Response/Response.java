@@ -26,10 +26,10 @@ public class Response {
 
   private String setBody(String body) {
     String responseBody = "";
-      if (body != null) {
-        responseBody = body;
-      }
-      return responseBody;
+    if (body != null) {
+      responseBody = body;
+    }
+    return responseBody;
   }
 
   private String formatHeaders(HashMap<String, String> headers) {
@@ -66,7 +66,5 @@ public class Response {
     public Response build() {
       return new Response(this);
     }
-
-
   }
 }

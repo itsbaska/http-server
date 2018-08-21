@@ -28,7 +28,7 @@ public class HTTPClientStepDefinitions {
 
   @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
   public void iRequestOnPort(String path, String port) throws Throwable {
-    client = new HTTPClient(Integer.parseInt(port) , HOST);
+    client = new HTTPClient(Integer.parseInt(port), HOST);
     client.get(path);
   }
 
@@ -50,6 +50,11 @@ public class HTTPClientStepDefinitions {
   @When("^I request \"OPTIONS\" \"([^\"]*)\"$")
   public void iRequestOptions(String path) throws Throwable {
     client.options(path);
+  }
+
+  @When("^I request \"HEAD\" \"([^\"]*)\"$")
+  public void iRequestHead(String path) throws Throwable {
+    client.head(path);
   }
 
   @Then("^the response status should be (\\d+)$")

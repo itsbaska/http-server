@@ -22,9 +22,9 @@ public class Config {
     routes.add(new Route(GET, "/not-found", new NotFoundHandler()));
     routes.add(new Route(HEAD, "/", new HEAD200Handler()));
     routes.add(new Route(HEAD, "/foobar", new HEAD404Handler()));
+    routes.add(new Route(GET, "/redirect", new RedirectHandler()));
     return routes;
   }
-
 
   public static String setPort(String[] args) throws IOException {
     String port = null;

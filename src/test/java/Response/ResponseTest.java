@@ -13,8 +13,6 @@ public class ResponseTest {
       .setStatusCode(200)
       .build();
     assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
-      "Content-Length: 5\r\n" +
-      "Content-Type: text/html\r\n" +
       "\r\n" +
       "hello");
   }
@@ -28,8 +26,6 @@ public class ResponseTest {
       .build();
     assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
       "Allow: GET\r\n" +
-      "Content-Length: 5\r\n" +
-      "Content-Type: text/html\r\n" +
       "\r\n" +
       "hello");
   }
@@ -39,10 +35,10 @@ public class ResponseTest {
     Response response = new Response.Builder()
       .setHeader("Allow", "GET")
       .setStatusCode(200)
+      .setBody("")
       .build();
-    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
-      "Allow: GET\r\n" +
-      "\r\n");
+    System.out.println(response.stringify());
+    assertEquals(response.body, "");
   }
 
 

@@ -1,13 +1,14 @@
 package HttpClient;
 
 import org.apache.http.*;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class HTTPClient {
   public HTTPClient(int port, String host) {
     this.port = port;
     this.host = host;
-    this.client = HttpClients.createDefault();
+    this.client = HttpClientBuilder.create().disableRedirectHandling().build();
   }
 
   private URI uri(String path) throws URISyntaxException {
@@ -65,9 +66,22 @@ public class HTTPClient {
     httpPut.setEntity(entity);
     return response = client.execute(httpPut);
   }
-
+  public CloseableHttpResponse head(String path) throws IOException, URISyntaxException {
+    HttpHead httpHead = new HttpHead(uri(path));
+    return response = client.execute(httpHead);
+  }
   public String getResponseBody() throws IOException {
-    return new BasicResponseHandler().handleResponse(response);
+    String responseBody;
+    try {
+      responseBody = new BasicResponseHandler().handleResponse(response);
+      if (responseBody == null) {
+        responseBody = "";
+      }
+    } catch (HttpResponseException e) {
+      System.err.println(e.getMessage());
+      responseBody = e.getMessage();
+    }
+    return responseBody;
   }
 
   public int getResponseStatusCode() {
