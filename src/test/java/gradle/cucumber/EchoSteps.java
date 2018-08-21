@@ -161,6 +161,7 @@ public class EchoSteps {
     response = httpclient.execute(httpGet);
   }
 
+
   @When("^I request \"HEAD\" \"([^\"]*)\"$")
   public void iRequestHead(String path) throws Throwable {
     httpclient = HttpClients.createDefault();
