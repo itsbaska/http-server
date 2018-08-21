@@ -3,18 +3,15 @@ package Config.Routes;
 import Config.Method;
 import Controller.Handler.Handler;
 
-abstract public class Route {
-	Method method;
-	String path;
-	public Handler handler;
+public class Route extends Routes {
+	public final Method method;
+	public final String path;
+	public final Handler handler;
 
-	public Method getMethod() {
-		return method;
+	public Route(Method method, String path, Handler handler) {
+		this.method = method;
+		this.path = path;
+		this.handler = handler;
 	}
-	public String getPath() {
-		return path;
-	}
-	public Handler getHandler() { return  handler; }
-
 }
 

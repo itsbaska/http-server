@@ -1,5 +1,6 @@
 package Config.Routes;
 
+import Config.Method;
 import Request.Request;
 
 import java.util.ArrayList;
@@ -15,11 +16,20 @@ public class Routes {
     return routes;
   }
 
-  public Route find(Request request) {
-    Route requestedRoute = null;
+  private Route getNotFound() {
+    Route notFound = null;
     for (Route route : getRoutes()) {
-      if (route.getMethod().equals(request.method) && route.getPath().equals(request.path)) {
+      if (route.method.equals(Method.GET) && route.path.equals("/not-found")) notFound = route;
+    }
+    return notFound;
+  }
+
+  public Route find(Request request) {
+    Route requestedRoute = getNotFound();
+    for (Route route : getRoutes()) {
+      if (route.method.equals(request.method) && route.path.equals(request.path)) {
         requestedRoute = route;
+        break;
       }
     }
     return requestedRoute;

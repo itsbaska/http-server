@@ -1,34 +1,25 @@
 package Config;
 
-import Config.Routes.RouteFactory;
+import Config.Routes.Route;
 import Config.Routes.Routes;
 import Controller.Handler.*;
 
 import java.io.IOException;
 
 import static Config.Method.*;
-import Controller.Handler.GETEchoHandler;
-import Controller.Handler.GETHandler;
-import Controller.Handler.OPTIONSHandler;
-import Controller.Handler.POSTEchoHandler;
-import Controller.Handler.PUTFormHandler;
-import Controller.Handler.POSTFormHandler;
-
-import java.io.IOException;
-
 import static Validator.Validator.*;
 
 public class Config {
   public static Routes setRoutes() {
     Routes routes = new Routes();
-    RouteFactory factory = new RouteFactory();
-    routes.add(factory.createRoute(GET, "/", new GETHandler()));
-    routes.add(factory.createRoute(GET, "/echo", new GETEchoHandler()));
-    routes.add(factory.createRoute(POST, "/echo", new POSTEchoHandler()));
-    routes.add(factory.createRoute(PUT, "/form", new PUTFormHandler()));
-    routes.add(factory.createRoute(POST, "/form", new POSTFormHandler()));
-    routes.add(factory.createRoute(OPTIONS, "/method_options", new OPTIONSHandler()));
-    routes.add(factory.createRoute(OPTIONS, "/method_options2", new OPTIONS2Handler()));
+    routes.add(new Route(GET, "/", new GETHandler()));
+    routes.add(new Route(GET, "/echo", new GETEchoHandler()));
+    routes.add(new Route(POST, "/echo", new POSTEchoHandler()));
+    routes.add(new Route(PUT, "/form", new PUTFormHandler()));
+    routes.add(new Route(POST, "/form", new POSTFormHandler()));
+    routes.add(new Route(OPTIONS, "/method_options", new OPTIONSHandler()));
+    routes.add(new Route(OPTIONS, "/method_options2", new OPTIONS2Handler()));
+    routes.add(new Route(GET, "/not-found", new NotFoundHandler()));
     return routes;
   }
 
