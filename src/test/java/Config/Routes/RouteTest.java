@@ -25,18 +25,6 @@ public class RouteTest {
   }
 
   @Test
-  public void testGETHandlerPath() {
-    Route route = new Route(GET, "/", new GETHandler());
-    assertEquals(((GETHandler) route.handler).path, "/");
-  }
-
-  @Test
-  public void testGETHandlerMethod() {
-    Route route = new Route(GET, "/", new GETHandler());
-    assertEquals(((GETHandler) route.handler).method, GET);
-  }
-
-  @Test
   public void testGETHandlerResponseStatusCode() {
     Route route = new Route(GET, "/", new GETHandler());
     String requestString = "GET / HTTP/1.1" + CRLF +
@@ -75,18 +63,6 @@ public class RouteTest {
   public void testPOSTPath() {
     Route route = new Route(POST, "/echo", new POSTEchoHandler());
     assertEquals("/echo", route.path);
-  }
-
-  @Test
-  public void testPOSTEchoHandlerPath() {
-    Route route = new Route(POST, "/echo", new POSTEchoHandler());
-    assertEquals("/echo", ((POSTEchoHandler) route.handler).path);
-  }
-
-  @Test
-  public void testPOSTEchoHandlerMethod() {
-    Route route = new Route(POST, "/echo", new POSTEchoHandler());
-    assertEquals(POST, ((POSTEchoHandler) route.handler).method);
   }
 
   @Test

@@ -3,24 +3,10 @@ package Controller.Handler;
 import Request.Request;
 import org.junit.Test;
 
-import static Config.Method.GET;
-import static Config.Method.POST;
 import static org.junit.Assert.assertEquals;
 
 public class POSTEchoHandlerTest {
   private String CRLF = "\r\n";
-
-  @Test
-  public void testPOSTEchoHandlerPath() {
-    Handler handler = new POSTEchoHandler();
-    assertEquals("/echo", ((POSTEchoHandler) handler).path);
-  }
-
-  @Test
-  public void testPOSTEchoHandlerMethod() {
-    Handler handler = new POSTEchoHandler();
-    assertEquals(POST, ((POSTEchoHandler) handler).method);
-  }
 
   @Test
   public void handlerReturnResponseBody() {

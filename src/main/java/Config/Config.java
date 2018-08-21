@@ -20,6 +20,7 @@ public class Config {
     routes.add(new Route(OPTIONS, "/method_options", new OPTIONSHandler()));
     routes.add(new Route(OPTIONS, "/method_options2", new OPTIONS2Handler()));
     routes.add(new Route(GET, "/not-found", new NotFoundHandler()));
+    routes.add(new Route(HEAD, "/", new HEAD200Handler()));
     return routes;
   }
 
