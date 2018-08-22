@@ -18,7 +18,6 @@ public class HTTPClientStepDefinitions {
 
   @Before("not @redirect")
   public void connectClient() {
-    System.out.println("not redirect");
     int DEFAULT_PORT = 3000;
     client = new HTTPClient(DEFAULT_PORT, HOST);
   }
@@ -91,7 +90,34 @@ public class HTTPClientStepDefinitions {
   @When("^I visit \"([^\"]*)\" and follow the 302 Location$")
   public void iVisitAndFollowTheLocation(String path) throws Throwable {
     client = new HTTPClient(5000, HOST);
-    client.createRedirectCient();
+    client.createRedirectClient();
     client.redirect(path);
+  }
+
+  @And("^the response body contains all of the files and directory contents in \"([^\"]*)\"$")
+  public void theResponseBodyContainsAllOfTheFilesAndDirectoryContentsIn(String directory) throws Throwable {
+    String htmlDoc = "<!DOCTYPE html>\n" +
+      "<html lang=\"en\">\n" +
+      "<head>\n" +
+      "    <meta charset=\"UTF-8\">\n" +
+      "    <title>Title</title>\n" +
+      "</head>\n" +
+      "<body>\n" +
+      "<ul>\n" +
+      "<li><a href=\"/text-file.txt\">text-file.txt</a></li>\n" +
+      "<li><a href=\"/file2\">file2</a></li>\n" +
+      "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
+      "<li><a href=\"/file1\">file1</a></li>\n" +
+      "<li><a href=\"/image.png\">image.png</a></li>\n" +
+      "</ul>\n" +
+      "</body>\n" +
+      "</html>";
+    assertEquals(htmlDoc, client.getResponseBody());
+  }
+
+  @And("^the response body has directory link \"([^\"]*)\"$")
+  public void theResponseBodyHasDirectoryLink(String file) throws Throwable {
+System.out.println(file.substring(1));
+    assertTrue(client.getResponseBody().contains("<a href=\"" + file + "\">" + file.substring(1) + "</a>"));
   }
 }

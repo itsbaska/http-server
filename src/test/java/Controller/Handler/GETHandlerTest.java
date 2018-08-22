@@ -15,7 +15,16 @@ public class GETHandlerTest {
       "Content-Type: text/plain" + CRLF + CRLF +
       "";
     Request request = new Request.Builder().build(requestString);
-    assertEquals("", handler.handle(request).body);
+    String expected = "<!DOCTYPE html>\n" +
+      "<html lang=\"en\">\n" +
+      "<head>\n" +
+      "    <meta charset=\"UTF-8\">\n" +
+      "    <title>Title</title>\n" +
+      "</head>\n" +
+      "<body>\n" +
+      "</body>\n" +
+      "</html>";
+    assertEquals(expected, handler.handle(request).body);
   }
 
   @Test

@@ -6,17 +6,17 @@ import Request.Request;
 import java.util.ArrayList;
 
 public class Routes {
-  public static ArrayList<Route> routes = new ArrayList<>();
+  public ArrayList<Route> routes = new ArrayList<>();
 
   public void add(Route route) {
     routes.add(route);
   }
 
-  public static ArrayList<Route> getRoutes() {
+  public ArrayList<Route> getRoutes() {
     return routes;
   }
 
-  public static Route getNotFound() {
+  public Route getNotFound() {
     Route notFound = null;
     for (Route route : getRoutes()) {
       if (route.method.equals(Method.GET) && route.path.equals("/not-found")) notFound = route;
