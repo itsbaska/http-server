@@ -1,5 +1,6 @@
 package Controller.Handler;
 
+import Controller.Controller;
 import Request.Request;
 import org.junit.Test;
 
@@ -15,8 +16,9 @@ public class GETEchoHandlerTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 5" + CRLF + CRLF +
       "hello";
+    Controller controller = new Controller();
     Request request = new Request.Builder().build(requestString);
-    assertEquals("", handler.handle(request).body);
+    assertEquals("", controller.handleRequest(request).body);
   }
 
   @Test

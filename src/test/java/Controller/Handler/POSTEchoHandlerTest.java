@@ -34,9 +34,9 @@ public class POSTEchoHandlerTest {
   @Test
   public void handlerReturnResponseContentLength() {
     Handler handler = new POSTEchoHandler();
-    String requestString = "GET /echo HTTP/1.1" + CRLF +
+    String requestString = "POST /echo HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF +
-      "content-length: 5" + CRLF + CRLF +
+      "Content-length: 5" + CRLF + CRLF +
       "hello";
     Request request = new Request.Builder().build(requestString);
     assertEquals(5, handler.handle(request).contentLength);

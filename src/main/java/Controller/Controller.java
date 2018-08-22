@@ -17,6 +17,4 @@ public class Controller {
     Route route = routes.find(request);
     return route.handler.handle(request);
   }
-
-
 }

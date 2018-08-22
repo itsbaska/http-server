@@ -16,8 +16,9 @@ public class HTTPClientStepDefinitions {
   private static String HOST = "127.0.0.1";
   private HTTPClient client;
 
-  @Before
+  @Before("not @redirect")
   public void connectClient() {
+    System.out.println("not redirect");
     int DEFAULT_PORT = 3000;
     client = new HTTPClient(DEFAULT_PORT, HOST);
   }
@@ -28,7 +29,7 @@ public class HTTPClientStepDefinitions {
 
   @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
   public void iRequestOnPort(String path, String port) throws Throwable {
-    client = new HTTPClient(Integer.parseInt(port) , HOST);
+    client = new HTTPClient(Integer.parseInt(port), HOST);
     client.get(path);
   }
 
@@ -50,6 +51,11 @@ public class HTTPClientStepDefinitions {
   @When("^I request \"OPTIONS\" \"([^\"]*)\"$")
   public void iRequestOptions(String path) throws Throwable {
     client.options(path);
+  }
+
+  @When("^I request \"HEAD\" \"([^\"]*)\"$")
+  public void iRequestHead(String path) throws Throwable {
+    client.head(path);
   }
 
   @Then("^the response status should be (\\d+)$")
@@ -80,5 +86,12 @@ public class HTTPClientStepDefinitions {
   @And("^the response header should include \"([^\"]*)\" \"([^\"]*)\"$")
   public void theResponseHeaderShouldInclude(String header, String option) {
     assertTrue(client.getHeaders(header).contains(option));
+  }
+
+  @When("^I visit \"([^\"]*)\" and follow the 302 Location$")
+  public void iVisitAndFollowTheLocation(String path) throws Throwable {
+    client = new HTTPClient(5000, HOST);
+    client.createRedirectCient();
+    client.redirect(path);
   }
 }

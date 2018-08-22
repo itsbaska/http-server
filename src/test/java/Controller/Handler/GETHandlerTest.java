@@ -12,7 +12,8 @@ public class GETHandlerTest {
   public void handlerReturnResponseBody() {
     Handler handler = new GETHandler();
     String requestString = "GET / HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF;
+      "Content-Type: text/plain" + CRLF + CRLF +
+      "";
     Request request = new Request.Builder().build(requestString);
     assertEquals("", handler.handle(request).body);
   }
