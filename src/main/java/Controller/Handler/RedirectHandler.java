@@ -7,7 +7,7 @@ public class RedirectHandler extends Handler {
 
     return new Response.Builder()
       .setStatusCode(302)
-      .setHeader("Location", "http://127.0.0.1:3000/")
+      .setHeader("Location", "/")
       .build();
   }
 }

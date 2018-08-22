@@ -16,8 +16,9 @@ public class HTTPClientStepDefinitions {
   private static String HOST = "127.0.0.1";
   private HTTPClient client;
 
-  @Before
+  @Before("not @redirect")
   public void connectClient() {
+    System.out.println("not redirect");
     int DEFAULT_PORT = 3000;
     client = new HTTPClient(DEFAULT_PORT, HOST);
   }
@@ -85,5 +86,12 @@ public class HTTPClientStepDefinitions {
   @And("^the response header should include \"([^\"]*)\" \"([^\"]*)\"$")
   public void theResponseHeaderShouldInclude(String header, String option) {
     assertTrue(client.getHeaders(header).contains(option));
+  }
+
+  @When("^I visit \"([^\"]*)\" and follow the 302 Location$")
+  public void iVisitAndFollowTheLocation(String path) throws Throwable {
+    client = new HTTPClient(5000, HOST);
+    client.createRedirectCient();
+    client.redirect(path);
   }
 }

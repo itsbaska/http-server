@@ -4,11 +4,14 @@ import org.apache.http.*;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -24,13 +27,23 @@ import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
 public class HTTPClient {
   private final int port;
   private final String host;
-  private final CloseableHttpClient client;
+  private CloseableHttpClient client;
   private CloseableHttpResponse response;
 
   public HTTPClient(int port, String host) {
     this.port = port;
     this.host = host;
-    this.client = HttpClientBuilder.create().disableRedirectHandling().build();
+    this.client = HttpClientBuilder
+      .create()
+      .disableRedirectHandling()
+      .build();
+  }
+
+  public void createRedirectCient() {
+    this.client = HttpClientBuilder
+      .create()
+      .setRedirectStrategy(new LaxRedirectStrategy())
+      .build();
   }
 
   private URI uri(String path) throws URISyntaxException {
@@ -70,6 +83,23 @@ public class HTTPClient {
     HttpHead httpHead = new HttpHead(uri(path));
     return response = client.execute(httpHead);
   }
+
+  public CloseableHttpResponse redirect(String path) throws IOException, URISyntaxException {
+    HttpClientContext context = HttpClientContext.create();
+    HttpGet httpGet = new HttpGet(uri(path));
+
+    response = client.execute(httpGet, context);
+    HttpHost target = context.getTargetHost();
+
+    List<URI> redirectLocations = context.getRedirectLocations();
+    URI location = URIUtils.resolve(httpGet.getURI(), target, redirectLocations);
+
+    System.out.println("Executing request " + httpGet.getRequestLine());
+    System.out.println("----------------------------------------");
+    System.out.println("Final HTTP location: " + location.toASCIIString());
+    return response;
+  }
+
   public String getResponseBody() throws IOException {
     String responseBody;
     try {
