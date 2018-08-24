@@ -37,7 +37,6 @@ public class ResponseTest {
       .setStatusCode(200)
       .setBody("")
       .build();
-    System.out.println(response.stringify());
     assertEquals(response.body, "");
   }
 

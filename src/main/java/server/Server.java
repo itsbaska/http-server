@@ -1,5 +1,5 @@
 package Server;
-import Controller.Controller;
+import Router.Router;
 import Request.Request;
 import Response.Response;
 import java.io.*;
@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Server implements Runnable {
   private final String port;
-  private Controller controller = new Controller();
+  private Router router = new Router();
   private boolean running = true;
 
   public Server(String port) {
@@ -25,7 +25,7 @@ public class Server implements Runnable {
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
       Request request = new Request.Builder().build(requestBuilder.toString());
 
-      Response response = controller.handleRequest(request);
+      Response response = router.handleRequest(request);
       out.write(response.stringify());
 
       out.flush();

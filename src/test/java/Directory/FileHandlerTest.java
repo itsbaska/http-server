@@ -1,5 +1,6 @@
 package Directory;
 
+import Config.Config;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class FileHandlerTest {
 
   @Test
   public void getFileNames() {
-    FileHandler fileHandler = new FileHandler("/src/main/java/assets", "/");
+    Directory directory = new Directory(Config.publicDirectory);
     ArrayList<String> files = new ArrayList<>();
     files.add("file1");
     files.add("file2");
@@ -21,7 +22,7 @@ public class FileHandlerTest {
     files.add("text-file.txt");
 
     Collection<String> listOne = files;
-    Collection<String> listTwo = fileHandler.getFileNames();
+    Collection<String> listTwo = directory.getFileNames();
 
     List<String> expectedList = new ArrayList<>(listOne);
     List<String> actualList = new ArrayList<>(listTwo);
