@@ -29,7 +29,6 @@ public class Request {
     }
 
     private Builder setPath() {
-      System.out.println(fullRequestText);
       String fullRequest[] = fullRequestText.split(": |\\r\\n");
       this.path = fullRequest[0].split(" ")[1];
       return this;

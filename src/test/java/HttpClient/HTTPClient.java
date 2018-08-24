@@ -17,10 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
 
@@ -39,7 +36,7 @@ public class HTTPClient {
       .build();
   }
 
-  public void createRedirectCient() {
+  public void createRedirectClient() {
     this.client = HttpClientBuilder
       .create()
       .setRedirectStrategy(new LaxRedirectStrategy())
