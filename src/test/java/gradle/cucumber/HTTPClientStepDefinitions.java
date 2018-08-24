@@ -16,9 +16,15 @@ public class HTTPClientStepDefinitions {
   private static String HOST = "127.0.0.1";
   private HTTPClient client;
 
-  @Before("not @redirect")
+  @Before("not @port5000")
   public void connectClient() {
     int DEFAULT_PORT = 3000;
+    client = new HTTPClient(DEFAULT_PORT, HOST);
+  }
+
+  @Before("@port5000")
+  public void connectClient2() {
+    int DEFAULT_PORT = 5000;
     client = new HTTPClient(DEFAULT_PORT, HOST);
   }
 
@@ -76,7 +82,7 @@ public class HTTPClientStepDefinitions {
   public void iAmInAConsoleShell() {
   }
 
-  @When("^I start the server with the option \"([^\"]*)\"$")
+  @Given("^I start the server with the option \"([^\"]*)\"$")
   public void iStartTheServerWithTheOption(String option) throws Throwable {
     Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");
     Runtime.getRuntime().exec("java -cp src/main/java StartServer " + option);

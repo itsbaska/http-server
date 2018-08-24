@@ -5,7 +5,7 @@ Feature: GET /redirect
     Then the response status should be 302
     And the response header should include "Location" "/"
 
-  @redirect
+  @port5000
   Scenario: Redirects work with any port
     Given I start the server with the option "-p 5000"
     When I visit "/redirect" and follow the 302 Location

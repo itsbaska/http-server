@@ -6,22 +6,13 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
-public class Server {
-  Controller controller = new Controller();
+public class Server implements Runnable {
+  private final String port;
+  private Controller controller = new Controller();
+  private boolean running = true;
 
-  public void go(String port) throws IOException {
-    System.out.println("Starting Server on PORT: " + port);
-    ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
-
-    while (true) {
-      Socket clientSocket = serverSocket.accept();
-      System.out.println("\nAccepted connection from testClient: " + clientSocket.getRemoteSocketAddress());
-
-      handleRequest(clientSocket);
-
-      clientSocket.close();
-      System.out.println("\nClosing connection with testClient: " + clientSocket.getInetAddress());
-    }
+  public Server(String port) {
+    this.port = port;
   }
 
   private void handleRequest(Socket clientSocket) {
@@ -44,6 +35,34 @@ public class Server {
       System.out.println(ex);
       System.out.println("Read failed");
       System.exit(-1);
+    }
+  }
+
+  public void stop() {
+    this.running = false;
+  }
+
+  public Boolean isRunning() {
+    return running;
+  }
+
+  @Override
+  public void run() {
+    try {
+      System.out.println("Starting Server on PORT: " + port);
+      ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port));
+
+      while (running) {
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("\nAccepted connection from testClient: " + clientSocket.getRemoteSocketAddress());
+
+        handleRequest(clientSocket);
+
+        clientSocket.close();
+        System.out.println("\nClosing connection with testClient: " + clientSocket.getInetAddress());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }
