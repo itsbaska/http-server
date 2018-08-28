@@ -1,5 +1,6 @@
 package Config;
 
+import Router.Handler.ParameterHandler;
 import Logger.Logger;
 import Request.Credential;
 import Router.Handler.*;
@@ -47,6 +48,7 @@ public class Config {
     routes.add(new Route(HEAD, "/foobar", new HEAD404Handler()));
     routes.add(new Route(GET, "/redirect", new RedirectHandler()));
     routes.add(new Route(GET, "/logs", new AUTHHandler()));
+    routes.add(new Route(GET, "/parameters", new ParameterHandler()));
     return routes;
   }
 

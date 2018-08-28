@@ -23,7 +23,7 @@ public class Server implements Runnable {
         requestBuilder.append((char) in.read());
       }
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-      Request request = new Request.Builder().build(requestBuilder.toString());
+      Request request = new Request(requestBuilder.toString()).build();
 
       Response response = router.handleRequest(request);
       out.write(response.stringify());

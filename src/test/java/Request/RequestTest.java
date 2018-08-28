@@ -9,25 +9,12 @@ public class RequestTest {
   private String CRLF = "\r\n";
 
   @Test
-  public void testRequest() {
-    String incomingRequest = "POST /echo HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF +
-      "Content-length: 7" + CRLF + CRLF +
-      "goodbye";
-    Request request = new Request.Builder().build(incomingRequest);
-    assertEquals("POST /echo HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF +
-      "Content-length: 7" + CRLF + CRLF +
-      "goodbye", request.fullRequestText);
-  }
-
-  @Test
   public void testRequestBody() {
     String incomingRequest = "POST /echo HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF +
       "Content-length: 7" + CRLF + CRLF +
       "goodbye";
-    Request request = new Request.Builder().build(incomingRequest);
+    Request request = new Request(incomingRequest).build();
     assertEquals("goodbye", request.body);
   }
 
@@ -35,8 +22,8 @@ public class RequestTest {
   public void testRequestNoBody() {
     String incomingRequest = "POST /echo HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF +
-      "Content-length: 7" + CRLF + CRLF;
-    Request request = new Request.Builder().build(incomingRequest);
+      "content-length: 7" + CRLF + CRLF;
+    Request request = new Request(incomingRequest).build();
     assertEquals("", request.body);
   }
 
@@ -46,7 +33,7 @@ public class RequestTest {
       "Content-Type: text/plain" + CRLF +
       "Content-length: 7" + CRLF + CRLF +
       "goodbye";
-    Request request = new Request.Builder().build(incomingRequest);
+    Request request = new Request(incomingRequest).build();
     assertEquals(POST, request.method);
   }
 
@@ -56,7 +43,7 @@ public class RequestTest {
       "Content-Type: text/plain" + CRLF +
       "Content-length: 7" + CRLF + CRLF +
       "goodbye";
-    Request request = new Request.Builder().build(incomingRequest);
+    Request request = new Request(incomingRequest).build();
     assertEquals("/echo", request.path);
   }
 
@@ -65,8 +52,28 @@ public class RequestTest {
     String incomingRequest = "POST /echo HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF +
       "Content-length: 7" + CRLF + CRLF;
-    Request request = new Request.Builder().build(incomingRequest);
-    assertEquals("text/plain", request.getHeader("Content-Type"));
+    Request request = new Request(incomingRequest).build();
 
+    assertEquals("text/plain", request.getHeader("Content-Type"));
+  }
+
+  @Test
+  public void testRequestParameters() {
+    String incomingRequest = "GET /echo?test=test HTTP/1.1" + CRLF +
+      "Content-Type: text/plain" + CRLF +
+      "content-length: 7" + CRLF + CRLF +
+      "goodbye";
+    Request request = new Request(incomingRequest).build();
+    assertEquals("test", request.parameters.get("test"));
+  }
+
+  @Test
+  public void testRequestMultiParameters() {
+    String incomingRequest = "GET /echo?test=test&this=that HTTP/1.1" + CRLF +
+      "Content-Type: text/plain" + CRLF +
+      "content-length: 7" + CRLF + CRLF +
+      "goodbye";
+    Request request = new Request(incomingRequest).build();
+    assertEquals("{test=test, this=that}", request.parameters.toString());
   }
 }
