@@ -10,7 +10,7 @@ public class ConfigTest {
 
   @Test
   public void setRoutes() {
-    assertEquals("/", Config.setRoutes().getRoutes().get(0).path);
+    assertEquals("/", Config.routes.getRoutes().get(0).path);
   }
 
   @Test

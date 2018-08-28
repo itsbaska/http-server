@@ -1,16 +1,39 @@
 package Config;
 
-import Config.Routes.Route;
-import Config.Routes.Routes;
-import Controller.Handler.*;
+import Logger.Logger;
+import Request.Credential;
+import Router.Handler.*;
+import Routes.Route;
+import Routes.Routes;
 
+import java.io.File;
 import java.io.IOException;
 
-import static Config.Method.*;
 import static Validator.Validator.*;
+import static utils.Method.*;
 
 public class Config {
-  public static Routes setRoutes() {
+  public static final Credential credential = new Credential("one", "two");
+  public static final Routes routes = setRoutes();
+  public static final String rootPath = System.getProperty("user.dir");
+  public static final File publicDirectory = setPublicDirectory();
+  public static final Logger logger = setLogger();
+
+  private static File setPublicDirectory() {
+    File file = new File(rootPath + "/src/main/java/assets/public");
+    if (!file.isDirectory()) {
+      file = new File(rootPath + "/assets/public");
+    }
+    return file;
+  }
+
+  private static Logger setLogger() {
+    Logger logger = new Logger();
+    logger.createLogFile("logs.txt");
+    return logger;
+  }
+
+  private static Routes setRoutes() {
     Routes routes = new Routes();
     routes.add(new Route(GET, "/", new GETHandler()));
     routes.add(new Route(GET, "/echo", new GETEchoHandler()));
@@ -23,6 +46,7 @@ public class Config {
     routes.add(new Route(HEAD, "/", new HEAD200Handler()));
     routes.add(new Route(HEAD, "/foobar", new HEAD404Handler()));
     routes.add(new Route(GET, "/redirect", new RedirectHandler()));
+    routes.add(new Route(GET, "/logs", new AUTHHandler()));
     return routes;
   }
 

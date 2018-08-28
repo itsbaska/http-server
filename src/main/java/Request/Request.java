@@ -1,6 +1,8 @@
 package Request;
 
-import Config.Method;
+import Config.Config;
+import Directory.FileHandler;
+import utils.Method;
 
 public class Request {
   public Method method;
@@ -13,6 +15,26 @@ public class Request {
     this.path = path;
     this.body = body;
     this.fullRequestText = fullRequestText;
+  }
+
+  public String getHeader(String header) {
+    String[] requestLines = fullRequestText.split("\\r\\n");
+    String headerValue = "";
+    for (String line : requestLines) {
+      if (line.contains(header)) {
+        headerValue = line.split(": ")[1];
+      }
+    }
+    return headerValue;
+  }
+
+  private String getRequestLine() {
+    return fullRequestText.split("\\r\\n")[0];
+  }
+
+  public void log() {
+    FileHandler logger = new FileHandler(Config.logger.logFile);
+    logger.addContent(getRequestLine() + "\n");
   }
 
 

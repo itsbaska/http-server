@@ -15,18 +15,22 @@ import static org.junit.Assert.assertTrue;
 public class HTTPClientStepDefinitions {
   private static String HOST = "127.0.0.1";
   private HTTPClient client;
+  private int DEFAULT_PORT = 3000;
 
   @Before("not @port5000")
   public void connectClient() {
-    int DEFAULT_PORT = 3000;
     client = new HTTPClient(DEFAULT_PORT, HOST);
   }
 
   @Before("@port5000")
   public void connectClient2() {
-    int DEFAULT_PORT = 5000;
-    client = new HTTPClient(DEFAULT_PORT, HOST);
+    client = new HTTPClient(5000, HOST);
   }
+
+//  @After
+//  public void closeClientConnection() {
+//    client.closeClient();
+//  }
 
   @Given("the server is running")
   public void serverIsRunning() {
@@ -118,12 +122,32 @@ public class HTTPClientStepDefinitions {
       "</ul>\n" +
       "</body>\n" +
       "</html>";
-    assertEquals(htmlDoc, client.getResponseBody());
+    String body = client.getResponseBody();
+    assertEquals(htmlDoc, body);
   }
 
   @And("^the response body has directory link \"([^\"]*)\"$")
   public void theResponseBodyHasDirectoryLink(String file) throws Throwable {
-System.out.println(file.substring(1));
     assertTrue(client.getResponseBody().contains("<a href=\"" + file + "\">" + file.substring(1) + "</a>"));
+  }
+
+  @And("^I have made additional requests$")
+  public void iHaveMadeAdditionalRequests() throws Throwable {
+    client = new HTTPClient(DEFAULT_PORT, HOST);
+    client.get("/echo");
+    client = new HTTPClient(DEFAULT_PORT, HOST);
+    client.post("Hello, this is logs", "/echo");
+  }
+
+  @When("^I request \"GET\" \"([^\"]*)\" with authorization$")
+  public void iRequestWithAuthorization(String path) throws Throwable {
+    client.getWithAuth(path);
+  }
+
+  @And("^the response body has log contents$")
+  public void theResponseBodyHasLogContents() throws Throwable {
+    String body = client.getResponseBody();
+    assertTrue(body.contains("GET /echo HTTP/1.1"));
+    assertTrue(body.contains("POST /echo HTTP/1.1"));
   }
 }

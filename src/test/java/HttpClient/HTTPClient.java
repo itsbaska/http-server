@@ -1,10 +1,12 @@
 package HttpClient;
 
+import Request.Credential;
 import org.apache.http.*;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
@@ -17,9 +19,13 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 
 public class HTTPClient {
   private final int port;
@@ -57,31 +63,38 @@ public class HTTPClient {
     return response = client.execute(httpGet);
   }
 
-  public CloseableHttpResponse post(String body, String path) throws IOException, URISyntaxException {
+  public void getWithAuth(String path) throws URISyntaxException, IOException {
+    HttpGet httpGet = new HttpGet(uri(path));
+    Credential credential = new Credential("one", "two");
+    httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
+    response = client.execute(httpGet);
+  }
+
+  public void post(String body, String path) throws IOException, URISyntaxException {
     HttpPost httpPost = new HttpPost(uri(path));
     httpPost.setEntity(new StringEntity(body));
-    return response = client.execute(httpPost);
+    response = client.execute(httpPost);
   }
 
-  public CloseableHttpResponse options(String path) throws IOException, URISyntaxException {
+  public void options(String path) throws IOException, URISyntaxException {
     HttpOptions httpOptions = new HttpOptions(uri(path));
-    return response = client.execute(httpOptions);
+    response = client.execute(httpOptions);
   }
 
-  public CloseableHttpResponse put(String body, String path) throws IOException, URISyntaxException {
+  public void put(String body, String path) throws IOException, URISyntaxException {
     HttpPut httpPut = new HttpPut(uri(path));
     List<NameValuePair> formParams = new ArrayList<>();
     formParams.add(new BasicNameValuePair(parseFormData(body)[0], parseFormData(body)[1]));
     UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
     httpPut.setEntity(entity);
-    return response = client.execute(httpPut);
+    response = client.execute(httpPut);
   }
-  public CloseableHttpResponse head(String path) throws IOException, URISyntaxException {
+  public void head(String path) throws IOException, URISyntaxException {
     HttpHead httpHead = new HttpHead(uri(path));
-    return response = client.execute(httpHead);
+    response = client.execute(httpHead);
   }
 
-  public CloseableHttpResponse redirect(String path) throws IOException, URISyntaxException {
+  public void redirect(String path) throws IOException, URISyntaxException {
     HttpClientContext context = HttpClientContext.create();
     HttpGet httpGet = new HttpGet(uri(path));
 
@@ -94,7 +107,6 @@ public class HTTPClient {
     System.out.println("Executing request " + httpGet.getRequestLine());
     System.out.println("----------------------------------------");
     System.out.println("Final HTTP location: " + location.toASCIIString());
-    return response;
   }
 
   public String getResponseBody() throws IOException {
@@ -126,5 +138,9 @@ public class HTTPClient {
       }
     }
     return headerValues;
+  }
+
+  public void closeClient() {
+    HttpClientUtils.closeQuietly(client);
   }
 }
