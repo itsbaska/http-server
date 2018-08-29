@@ -16,8 +16,9 @@ public class GETEchoHandlerTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 5" + CRLF + CRLF +
       "hello";
+
     Router router = new Router();
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals("", router.handleRequest(request).body);
   }
 
@@ -29,7 +30,7 @@ public class GETEchoHandlerTest {
       "content-length: 5" + CRLF + CRLF +
       "hello";
 
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals(200, handler.handle(request).statusCode);
   }
 
@@ -40,7 +41,7 @@ public class GETEchoHandlerTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 5" + CRLF + CRLF +
       "hello";
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals(0, handler.handle(request).contentLength);
   }
 }

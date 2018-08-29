@@ -149,5 +149,11 @@ public class HTTPClientStepDefinitions {
     String body = client.getResponseBody();
     assertTrue(body.contains("GET /echo HTTP/1.1"));
     assertTrue(body.contains("POST /echo HTTP/1.1"));
+
+  }
+
+  @Then("^the response body should include \"([^\"]*)\"$")
+  public void theResponseBodyShouldInclude(String parameter) throws Throwable {
+    assertTrue(client.getResponseBody().contains(parameter));
   }
 }

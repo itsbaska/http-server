@@ -15,7 +15,7 @@ public class POSTEchoHandlerTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 5" + CRLF + CRLF +
       "hello";
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals("hello", handler.handle(request).body);
   }
 
@@ -27,7 +27,7 @@ public class POSTEchoHandlerTest {
       "content-length: 5" + CRLF + CRLF +
       "hello";
 
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals(200, handler.handle(request).statusCode);
   }
 }

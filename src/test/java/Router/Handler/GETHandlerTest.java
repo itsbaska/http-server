@@ -9,30 +9,11 @@ public class GETHandlerTest {
   private String CRLF = "\r\n";
 
   @Test
-  public void handlerReturnResponseBody() {
-    Handler handler = new GETHandler();
-    String requestString = "GET / HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF + CRLF +
-      "";
-    Request request = new Request.Builder().build(requestString);
-    String expected = "<!DOCTYPE html>\n" +
-      "<html lang=\"en\">\n" +
-      "<head>\n" +
-      "    <meta charset=\"UTF-8\">\n" +
-      "    <title>Title</title>\n" +
-      "</head>\n" +
-      "<body>\n" +
-      "</body>\n" +
-      "</html>";
-    assertEquals(expected, handler.handle(request).body);
-  }
-
-  @Test
   public void handlerReturnResponseStatusCode() {
   Handler handler = new GETHandler();
   String requestString = "GET / HTTP/1.1" + CRLF +
     "Content-Type: text/plain" + CRLF;
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals(200, handler.handle(request).statusCode);
   }
 
@@ -41,7 +22,7 @@ public class GETHandlerTest {
     Handler handler = new GETHandler();
     String requestString = "GET / HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF;
-    Request request = new Request.Builder().build(requestString);
+    Request request = new Request(requestString).build();
     assertEquals(0, handler.handle(request).contentLength);
   }
 }

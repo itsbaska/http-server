@@ -34,7 +34,7 @@ public class RoutesTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 7" + CRLF + CRLF +
       "goodbye";
-    Request request = new Request("GET", "/wrong-address", "goodbye", requestString);
+    Request request = new Request(requestString);
     Routes routes = new Routes();
     Route route = new Route(GET, "/not-found", new NotFoundHandler());
     routes.add(route);
@@ -48,7 +48,7 @@ public class RoutesTest {
       "Content-Type: text/plain" + CRLF +
       "content-length: 7" + CRLF + CRLF +
       "goodbye";
-    Request request = new Request("GET", "/echo", "goodbye", requestString);
+    Request request = new Request(requestString).build();
     Routes routes = new Routes();
     Route route = new Route(GET, "/echo", new GETEchoHandler());
     routes.add(route);

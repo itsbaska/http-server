@@ -4,21 +4,23 @@ import Config.Config;
 import Directory.FileHandler;
 import utils.Method;
 
+import java.util.HashMap;
+
 public class Request {
   public Method method;
   public String path;
   public String body;
-  public String fullRequestText;
+  public String request;
+  private String rawParameter;
+  public HashMap<String, String> parameters;
+  private boolean hasParameter;
 
-  public Request(String method, String path, String body, String fullRequestText) {
-    this.method = Method.toMethod(method);
-    this.path = path;
-    this.body = body;
-    this.fullRequestText = fullRequestText;
+  public Request(String request) {
+    this.request = request;
   }
 
   public String getHeader(String header) {
-    String[] requestLines = fullRequestText.split("\\r\\n");
+    String[] requestLines = request.split("\\r\\n");
     String headerValue = "";
     for (String line : requestLines) {
       if (line.contains(header)) {
@@ -29,7 +31,7 @@ public class Request {
   }
 
   private String getRequestLine() {
-    return fullRequestText.split("\\r\\n")[0];
+    return request.split("\\r\\n")[0];
   }
 
   public void log() {
@@ -37,46 +39,55 @@ public class Request {
     logger.addContent(getRequestLine() + "\n");
   }
 
-
-  public static class Builder {
-    private String method;
-    private String path;
-    private String body;
-    private String fullRequestText;
-
-    private Builder setMethod() {
-      String fullRequest[] = fullRequestText.split(": |\\r\\n");
-      this.method = fullRequest[0].split(" ")[0];
-      return this;
+  public Request build() {
+    setMethod();
+    setPath();
+    setBody();
+    if (hasParameter) {
+      setParameter();
     }
+    return this;
+  }
 
-    private Builder setPath() {
-      String fullRequest[] = fullRequestText.split(": |\\r\\n");
-      this.path = fullRequest[0].split(" ")[1];
-      return this;
-    }
+  private void setMethod() {
+    String fullRequest[] = request.split(": |\\r\\n");
+    this.method = Method.toMethod(fullRequest[0].split(" ")[0]);
+  }
 
-    private Builder setBody() {
-      String fullRequest[] = fullRequestText.split("\\r\\n\\r\\n");
-      if (fullRequest.length == 1) {
-        this.body = "";
-      } else {
-        this.body = fullRequest[1];
-      }
-      return this;
+  private void setPath() {
+    String fullRequest[] = request.split(": |\\r\\n");
+    String potentialPath = Parameters.decodeParameter(fullRequest[0].split(" ")[1]);
+    if (hasParameter(potentialPath)) {
+      this.path = getPathFromQuery(potentialPath);
+      this.rawParameter = getParametersFromQuery(potentialPath);
+      this.hasParameter = true;
+    } else {
+      this.path = potentialPath;
     }
+  }
 
-    public Builder setFullRequest(String fullRequestText) {
-      this.fullRequestText = fullRequestText;
-      return this;
+  private void setBody() {
+    String fullRequest[] = request.split("\\r\\n\\r\\n");
+    if (fullRequest.length == 1) {
+      this.body = "";
+    } else {
+      this.body = fullRequest[1];
     }
+  }
 
-    public Request build(String fullRequestText) {
-      setFullRequest(fullRequestText);
-      setBody();
-      setMethod();
-      setPath();
-      return new Request(method, path, body, fullRequestText);
-    }
+  private void setParameter() {
+    this.parameters = Parameters.getAllParameters(rawParameter);
+  }
+
+  private boolean hasParameter(String path) {
+    return path.contains("?");
+  }
+
+  private String getPathFromQuery(String query) {
+    return query.split("\\?", 2)[0];
+  }
+
+  private String getParametersFromQuery(String query) {
+    return query.split("\\?", 2)[1];
   }
 }
