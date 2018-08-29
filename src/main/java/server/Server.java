@@ -42,10 +42,6 @@ public class Server implements Runnable {
     this.running = false;
   }
 
-  public Boolean isRunning() {
-    return running;
-  }
-
   @Override
   public void run() {
     try {
