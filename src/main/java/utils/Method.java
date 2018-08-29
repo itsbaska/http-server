@@ -5,7 +5,8 @@ public enum Method {
   POST, 
   PUT,
   OPTIONS,
-  HEAD;
+  HEAD,
+  DELETE;
 
   public static Method toMethod(String stringMethod) {
     switch (stringMethod) {
@@ -19,6 +20,8 @@ public enum Method {
         return PUT;
       case "HEAD":
         return HEAD;
+      case "DELETE":
+        return DELETE;
       default:
         throw new Error();
     }

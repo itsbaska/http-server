@@ -94,6 +94,11 @@ public class HTTPClient {
     response = client.execute(httpHead);
   }
 
+  public void delete(String path) throws URISyntaxException, IOException {
+    HttpDelete httpDelete = new HttpDelete(uri(path));
+    response = client.execute(httpDelete);
+  }
+
   public void redirect(String path) throws IOException, URISyntaxException {
     HttpClientContext context = HttpClientContext.create();
     HttpGet httpGet = new HttpGet(uri(path));

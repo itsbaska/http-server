@@ -1,18 +1,21 @@
 package Directory;
 
-import java.io.*;
+import Router.Handler.Handler;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FileHandler {
+public class FileHandler extends Handler {
 
   private final File file;
 
   public FileHandler(File file) {
     this.file = file;
-
   }
 
   public void addContent(String text) {
@@ -28,17 +31,22 @@ public class FileHandler {
   public byte[] readContent() {
     byte[] content = new byte[0];
     try {
-      content =  Files.readAllBytes(Paths.get(file.getPath()));
+      content = Files.readAllBytes(Paths.get(file.getPath()));
     } catch (IOException e) {
       e.printStackTrace();
     }
     return content;
   }
 
-  public void deleteContent() throws IOException {
-    FileWriter writer = new FileWriter(file, true);
-    writer.write("");
-    writer.close();
+  public void deleteContent() {
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(file);
+      writer.write("");
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public String toHtmlList() {
