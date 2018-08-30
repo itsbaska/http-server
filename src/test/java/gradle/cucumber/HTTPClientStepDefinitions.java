@@ -1,6 +1,7 @@
 package gradle.cucumber;
 
 import HttpClient.HTTPClient;
+import Server.Server;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -16,6 +17,8 @@ public class HTTPClientStepDefinitions {
   private static String HOST = "127.0.0.1";
   private HTTPClient client;
   private int DEFAULT_PORT = 3000;
+  private static boolean serverIsRunning = false;
+  private Server server;
 
   @Before("not @port5000")
   public void connectClient() {
@@ -26,11 +29,6 @@ public class HTTPClientStepDefinitions {
   public void connectClient2() {
     client = new HTTPClient(5000, HOST);
   }
-
-//  @After
-//  public void closeClientConnection() {
-//    client.closeClient();
-//  }
 
   @Given("the server is running")
   public void serverIsRunning() {
@@ -87,9 +85,21 @@ public class HTTPClientStepDefinitions {
   }
 
   @Given("^I start the server with the option \"([^\"]*)\"$")
-  public void iStartTheServerWithTheOption(String option) throws Throwable {
-    Runtime.getRuntime().exec("javac -cp src/main/java/StartServer.java");
-    Runtime.getRuntime().exec("java -cp src/main/java StartServer " + option);
+  public void iStartTheServerWithTheOption(String option) {
+    if (!serverIsRunning) {
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        server.stop();
+        serverIsRunning = false;
+      }));
+      try {
+        server = new Server("5000");
+        Thread thread = new Thread(server);
+        thread.start();
+        serverIsRunning = true;
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @And("^the response header should include \"([^\"]*)\" \"([^\"]*)\"$")
