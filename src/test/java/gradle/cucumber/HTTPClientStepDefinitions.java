@@ -1,7 +1,5 @@
 package gradle.cucumber;
 
-import Config.Config;
-import Directory.FileHandler;
 import HttpClient.HTTPClient;
 import Server.Server;
 import cucumber.api.java.Before;
@@ -10,7 +8,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -129,7 +126,6 @@ public class HTTPClientStepDefinitions {
       "<ul>\n" +
       "<li><a href=\"/text-file.txt\">text-file.txt</a></li>\n" +
       "<li><a href=\"/file2\">file2</a></li>\n" +
-      "<li><a href=\"/formData\">formData</a></li>\n" +
       "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
       "<li><a href=\"/file1\">file1</a></li>\n" +
       "<li><a href=\"/image.png\">image.png</a></li>\n" +
@@ -178,7 +174,7 @@ public class HTTPClientStepDefinitions {
 
   @Given("^the page content of \"([^\"]*)\" is empty$")
   public void thePageContentOfIsEmpty(String path) throws Throwable {
-    FileHandler formFileHandler = new FileHandler(new File(Config.publicDirectory + "/formData"));
-    formFileHandler.deleteContent();
+    client.get(path);
+    assertEquals(client.getResponseBody(), "");
   }
 }
