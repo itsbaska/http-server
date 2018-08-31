@@ -7,6 +7,7 @@ import Router.Handler.*;
 import Router.Handler.StaticHandlers.*;
 import Routes.Route;
 import Routes.Routes;
+import Storage.Storage;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,8 @@ public class Config {
   public static final File publicDirectory = setPublicDirectory();
   public static final Routes routes = setRoutes();
   public static final Logger logger = setLogger();
+  public static final Storage storage = new Storage();
+
 
   private static File setPublicDirectory() {
     File file = new File(rootPath + "/src/main/java/assets/public");
@@ -50,6 +53,10 @@ public class Config {
     routes.add(new Route(GET, "/redirect", new RedirectHandler()));
     routes.add(new Route(GET, "/logs", new AUTHHandler()));
     routes.add(new Route(GET, "/parameters", new ParameterHandler()));
+    routes.add(new Route(GET, "/formData", new GETFormDataHandler()));
+    routes.add(new Route(POST, "/formData", new POSTFormDataHandler()));
+    routes.add(new Route(PUT, "/formData", new PUTFormDataHandler()));
+    routes.add(new Route(DELETE, "/formData", new DELETEFormDataHandler()));
     setStaticRoutes(routes);
     return routes;
   }
@@ -58,9 +65,6 @@ public class Config {
     Directory directory = new Directory(publicDirectory);
     for (String fileName : directory.getFileNames()) {
       routes.add(new Route(GET, "/" + fileName, new GETFileHandler(fileName)));
-      routes.add(new Route(POST, "/" + fileName, new POSTFileHandler(fileName)));
-      routes.add(new Route(PUT, "/" + fileName, new PUTFileHandler(fileName)));
-      routes.add(new Route(DELETE, "/" + fileName, new DELETEFileHandler(fileName)));
     }
   }
 
