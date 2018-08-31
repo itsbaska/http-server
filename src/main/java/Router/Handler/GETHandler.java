@@ -6,7 +6,7 @@ import Request.Request;
 import Response.Response;
 
 public class GETHandler extends Handler {
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
     Directory directory = new Directory(Config.publicDirectory);
     return new Response.Builder()
       .setStatusCode(200)

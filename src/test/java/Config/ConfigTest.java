@@ -9,11 +9,6 @@ import static org.junit.Assert.*;
 public class ConfigTest {
 
   @Test
-  public void setRoutes() {
-    assertEquals("/", Config.routes.getRoutes().get(0).path);
-  }
-
-  @Test
   public void setPort() throws IOException {
     String [] args = new String[]{"-p", "5000"};
     assertEquals("5000", Config.setPort(args));

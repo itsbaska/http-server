@@ -3,7 +3,7 @@ import Request.Request;
 import Response.Response;
 
 public class POSTEchoHandler extends Handler{
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
     return new Response.Builder()
       .setBody(request.body)
       .setHeader("Content-Length", String.valueOf(request.body.length()))

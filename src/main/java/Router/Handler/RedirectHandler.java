@@ -3,7 +3,7 @@ import Request.Request;
 import Response.Response;
 
 public class RedirectHandler extends Handler {
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
 
     return new Response.Builder()
       .setStatusCode(302)

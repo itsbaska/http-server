@@ -89,6 +89,7 @@ public class HTTPClient {
     httpPut.setEntity(entity);
     response = client.execute(httpPut);
   }
+
   public void head(String path) throws IOException, URISyntaxException {
     HttpHead httpHead = new HttpHead(uri(path));
     response = client.execute(httpHead);
@@ -97,6 +98,12 @@ public class HTTPClient {
   public void delete(String path) throws URISyntaxException, IOException {
     HttpDelete httpDelete = new HttpDelete(uri(path));
     response = client.execute(httpDelete);
+  }
+
+
+  public void invalid(String method, String path) throws IOException, URISyntaxException {
+    InvalidRequest request = new InvalidRequest(method, uri(path).toString());
+    response = client.execute(request);
   }
 
   public void redirect(String path) throws IOException, URISyntaxException {

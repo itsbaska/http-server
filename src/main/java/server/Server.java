@@ -1,7 +1,10 @@
 package Server;
+import Router.Handler.MethodNotAllowedHandler;
 import Router.Router;
 import Request.Request;
 import Response.Response;
+import utils.InvalidRequestException;
+
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +19,7 @@ public class Server implements Runnable {
   }
 
   private void handleRequest(Socket clientSocket) {
+
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
       StringBuilder requestBuilder = new StringBuilder();
@@ -23,11 +27,15 @@ public class Server implements Runnable {
         requestBuilder.append((char) in.read());
       }
       PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-      Request request = new Request(requestBuilder.toString()).build();
-
-      Response response = router.handleRequest(request);
+      Request request;
+      Response response;
+      try {
+        request = new Request(requestBuilder.toString()).build();
+        response = router.handleRequest(request);
+      } catch (InvalidRequestException e) {
+        response = new MethodNotAllowedHandler().getResponse();
+      }
       out.write(response.stringify());
-
       out.flush();
       out.close();
       in.close();

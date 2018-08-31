@@ -31,7 +31,7 @@ public class GETEchoHandlerTest {
       "hello";
 
     Request request = new Request(requestString).build();
-    assertEquals(200, handler.handle(request).statusCode);
+    assertEquals(200, handler.getResponse(request).statusCode);
   }
 
   @Test
@@ -42,6 +42,6 @@ public class GETEchoHandlerTest {
       "content-length: 5" + CRLF + CRLF +
       "hello";
     Request request = new Request(requestString).build();
-    assertEquals(0, handler.handle(request).contentLength);
+    assertEquals(0, handler.getResponse(request).contentLength);
   }
 }

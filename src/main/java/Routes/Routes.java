@@ -1,37 +1,27 @@
 package Routes;
 
+import Router.Handler.Handler;
 import utils.Method;
-import Request.Request;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Routes {
-  public ArrayList<Route> routes = new ArrayList<>();
+  public HashMap<String, Route> routes = new HashMap<String, Route>();
 
-  public void add(Route route) {
-    routes.add(route);
-  }
-
-  public ArrayList<Route> getRoutes() {
-    return routes;
-  }
-
-  public Route getNotFound() {
-    Route notFound = null;
-    for (Route route : getRoutes()) {
-      if (route.method.equals(Method.GET) && route.path.equals("/not-found")) notFound = route;
-    }
-    return notFound;
-  }
-
-  public Route find(Request request) {
-    Route requestedRoute = getNotFound();
-    for (Route route : getRoutes()) {
-      if (route.method.equals(request.method) && route.path.equals(request.path)) {
-        requestedRoute = route;
-        break;
+  public void add(Method method, String path, Handler handler) {
+    if (routes.get(path) == null) {
+      Route newRoute = new Route(path);
+      newRoute.setHandler(method, handler);
+      routes.put(path, newRoute);
+    } else {
+      Route route = routes.get(path);
+      if (isNewMethod(route, method)) {
+        route.setHandler(method, handler);
       }
     }
-    return requestedRoute;
+  }
+
+  private boolean isNewMethod(Route route, Method method) {
+    return !route.handlers.containsKey(method);
   }
 }
