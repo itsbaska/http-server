@@ -20,8 +20,8 @@ public class Response {
 
   public String stringify() {
     return "HTTP/1.1 " + this.statusCode + CRLF +
-      formatHeaders(this.headers) + CRLF +
-      setBody(this.body);
+      formatHeaders(headers) + CRLF +
+      setBody(body);
   }
 
   private String setBody(String body) {

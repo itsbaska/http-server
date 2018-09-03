@@ -7,7 +7,7 @@ import Request.Request;
 import Response.Response;
 
 public class AUTHHandler extends Handler {
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
     FileHandler log = new FileHandler(Config.logger.logFile);
     if (Config.credential.isAuthorized(request)) {
       return new Response.Builder()

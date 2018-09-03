@@ -3,15 +3,23 @@ package Routes;
 import utils.Method;
 import Router.Handler.Handler;
 
-public class Route extends Routes {
-	public final Method method;
-	public final String path;
-	public final Handler handler;
+import java.util.HashMap;
 
-	public Route(Method method, String path, Handler handler) {
-		this.method = method;
+public class Route extends Routes {
+	public final String path;
+	public HashMap<Method, Handler> handlers = new HashMap<>();
+
+	public Route(String path) {
 		this.path = path;
-		this.handler = handler;
 	}
+
+	public void setHandler(Method method, Handler handler) {
+    this.handlers.put(method, handler);
+	}
+
+	public Handler getHandler(Method method) {
+	  return handlers.get(method);
+  }
+
 }
 

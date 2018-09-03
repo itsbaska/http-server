@@ -5,7 +5,6 @@ import Logger.Logger;
 import Request.Credential;
 import Router.Handler.*;
 import Router.Handler.StaticHandlers.*;
-import Routes.Route;
 import Routes.Routes;
 import Storage.Storage;
 
@@ -40,23 +39,22 @@ public class Config {
 
   private static Routes setRoutes() {
     Routes routes = new Routes();
-    routes.add(new Route(GET, "/", new GETHandler()));
-    routes.add(new Route(GET, "/echo", new GETEchoHandler()));
-    routes.add(new Route(POST, "/echo", new POSTEchoHandler()));
-    routes.add(new Route(PUT, "/form", new PUTFormHandler()));
-    routes.add(new Route(POST, "/form", new POSTFormHandler()));
-    routes.add(new Route(OPTIONS, "/method_options", new OPTIONSHandler()));
-    routes.add(new Route(OPTIONS, "/method_options2", new OPTIONS2Handler()));
-    routes.add(new Route(GET, "/not-found", new NotFoundHandler()));
-    routes.add(new Route(HEAD, "/", new HEAD200Handler()));
-    routes.add(new Route(HEAD, "/foobar", new HEAD404Handler()));
-    routes.add(new Route(GET, "/redirect", new RedirectHandler()));
-    routes.add(new Route(GET, "/logs", new AUTHHandler()));
-    routes.add(new Route(GET, "/parameters", new ParameterHandler()));
-    routes.add(new Route(GET, "/formData", new GETFormDataHandler()));
-    routes.add(new Route(POST, "/formData", new POSTFormDataHandler()));
-    routes.add(new Route(PUT, "/formData", new PUTFormDataHandler()));
-    routes.add(new Route(DELETE, "/formData", new DELETEFormDataHandler()));
+    routes.add(GET, "/", new GETHandler());
+    routes.add(GET, "/echo", new GETEchoHandler());
+    routes.add(POST, "/echo", new POSTEchoHandler());
+    routes.add(PUT, "/form", new PUTFormHandler());
+    routes.add(POST, "/form", new POSTFormHandler());
+    routes.add(OPTIONS, "/method_options", new OPTIONSHandler());
+    routes.add(OPTIONS, "/method_options2", new OPTIONS2Handler());
+    routes.add(GET, "/not-found", new NotFoundHandler());
+    routes.add(HEAD, "/", new HEAD200Handler());
+    routes.add(GET, "/redirect", new RedirectHandler());
+    routes.add(GET, "/logs", new AUTHHandler());
+    routes.add(GET, "/parameters", new ParameterHandler());
+    routes.add(GET, "/formData", new GETFormDataHandler());
+    routes.add(POST, "/formData", new POSTFormDataHandler());
+    routes.add(PUT, "/formData", new PUTFormDataHandler());
+    routes.add(DELETE, "/formData", new DELETEFormDataHandler());
     setStaticRoutes(routes);
     return routes;
   }
@@ -64,7 +62,7 @@ public class Config {
   private static void setStaticRoutes(Routes routes) {
     Directory directory = new Directory(publicDirectory);
     for (String fileName : directory.getFileNames()) {
-      routes.add(new Route(GET, "/" + fileName, new GETFileHandler(fileName)));
+      routes.add(GET, "/" + fileName, new GETFileHandler(fileName));
     }
   }
 

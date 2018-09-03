@@ -177,4 +177,19 @@ public class HTTPClientStepDefinitions {
     client.get(path);
     assertEquals(client.getResponseBody(), "");
   }
+
+  @When("^I request \"SOMETHING\" \"([^\"]*)\"$")
+  public void iRequestSomething(String path) throws Throwable {
+   client.invalid("SOMETHING", path);
+  }
+
+  @When("^I request \"PUT\" \"([^\"]*)\"$")
+  public void iRequestPost(String path) throws Throwable {
+    client.invalid("PUT", path);
+  }
+
+  @When("^I request \"POST\" \"([^\"]*)\"$")
+  public void iRequestPut(String path) throws Throwable {
+    client.invalid("POST", path);
+  }
 }

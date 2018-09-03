@@ -23,7 +23,7 @@ public enum Method {
       case "DELETE":
         return DELETE;
       default:
-        throw new Error();
+          throw new InvalidRequestException("Request Method Not Found");
     }
   }
 }

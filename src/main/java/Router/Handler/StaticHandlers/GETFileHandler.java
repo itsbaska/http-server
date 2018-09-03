@@ -14,7 +14,7 @@ public class GETFileHandler extends Handler {
     this.fileName = fileName;
   }
 
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
     FileHandler file = new FileHandler(new File(publicDirectory.getPath() + "/" + fileName));
     return new Response.Builder()
       .setStatusCode(200)

@@ -6,7 +6,7 @@ import Response.Response;
 import Storage.Data;
 
 public class POSTFormDataHandler extends Handler {
-  public Response handle(Request request) {
+  public Response getResponse(Request request) {
     Config.storage.add(new Data(request.body));
     return new Response.Builder()
       .setStatusCode(200)
