@@ -166,4 +166,15 @@ public class HTTPClientStepDefinitions {
   public void theResponseBodyShouldInclude(String parameter) throws Throwable {
     assertTrue(client.getResponseBody().contains(parameter));
   }
+
+  @When("^I request \"DELETE\" \"([^\"]*)\"$")
+  public void iRequestDelete(String path) throws Throwable {
+    client.delete(path);
+  }
+
+  @Given("^the page content of \"([^\"]*)\" is empty$")
+  public void thePageContentOfIsEmpty(String path) throws Throwable {
+    client.get(path);
+    assertEquals(client.getResponseBody(), "");
+  }
 }
