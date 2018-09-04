@@ -64,7 +64,7 @@ public class HTTPClient {
   }
 
   public void getWithAuth(String path) throws URISyntaxException, IOException {
-    HttpGet httpGet = new HttpGet(uri(path));
+    httpGet = new HttpGet(uri(path));
     Credential credential = new Credential("one", "two");
     httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
     response = client.execute(httpGet);
@@ -116,7 +116,13 @@ public class HTTPClient {
     httpPatch.setHeader("ETag", etag);
     response = client.execute(httpPatch);
   }
-
+  
+  public void requestWithRange(String path, String range) throws URISyntaxException, IOException {
+    httpGet = new HttpGet(uri(path));
+    httpGet.setHeader("Content-Range", range);
+    response = client.execute(httpGet);
+  }
+  
   public void redirect(String path) throws IOException, URISyntaxException {
     HttpClientContext context = HttpClientContext.create();
     HttpGet httpGet = new HttpGet(uri(path));
