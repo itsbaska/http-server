@@ -26,7 +26,7 @@ public class Server implements Runnable {
       while (in.ready() || requestBuilder.length() == 0) {
         requestBuilder.append((char) in.read());
       }
-      PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+      DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
       Request request;
       Response response;
       try {
@@ -35,7 +35,7 @@ public class Server implements Runnable {
       } catch (InvalidRequestException e) {
         response = new MethodNotAllowedHandler().getResponse();
       }
-      out.write(response.stringify());
+      out.write(response.responseBytes());
       out.flush();
       out.close();
       in.close();

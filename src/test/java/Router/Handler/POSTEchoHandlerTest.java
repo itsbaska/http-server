@@ -16,7 +16,7 @@ public class POSTEchoHandlerTest {
       "content-length: 5" + CRLF + CRLF +
       "hello";
     Request request = new Request(requestString).build();
-    assertEquals("hello", handler.getResponse(request).body);
+    assertEquals("hello", new String(handler.getResponse(request).body));
   }
 
   @Test

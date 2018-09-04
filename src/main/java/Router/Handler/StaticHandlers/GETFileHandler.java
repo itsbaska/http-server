@@ -18,7 +18,7 @@ public class GETFileHandler extends Handler {
     FileHandler file = new FileHandler(new File(publicDirectory.getPath() + "/" + fileName));
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(new String(file.readContent()))
+      .setBody(file.readContent())
       .build();
   }
 }

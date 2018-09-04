@@ -10,7 +10,7 @@ public class GETHandler extends Handler {
     Directory directory = new Directory(Config.publicDirectory);
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(directory.get())
+      .setBody(directory.get().getBytes())
       .build();
   }
 }

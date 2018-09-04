@@ -12,13 +12,12 @@ public class AUTHHandler extends Handler {
     if (Config.credential.isAuthorized(request)) {
       return new Response.Builder()
         .setStatusCode(200)
-        .setBody(Formatter.createHtml(log.toHtmlList()))
+        .setBody(Formatter.createHtml(log.toHtmlList()).getBytes())
         .build();
     } else {
       return new Response.Builder()
         .setStatusCode(401)
         .setHeader("WWW-Authenticate", "Basic")
-        .setBody("")
         .build();
     }
   }

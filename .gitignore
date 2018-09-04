@@ -46,3 +46,5 @@ gradle-app.setting
 
 logs.txt
 /src/main/java/logs.txt
+
+.DS_Store

@@ -2,7 +2,6 @@ package HttpClient;
 
 import Request.Credential;
 import org.apache.http.*;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -10,7 +9,6 @@ import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
@@ -24,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.io.ByteStreams.toByteArray;
 import static gradle.cucumber.StepDefinitionsHelper.parseFormData;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 
@@ -122,17 +121,12 @@ public class HTTPClient {
   }
 
   public String getResponseBody() throws IOException {
-    String responseBody;
-    try {
-      responseBody = new BasicResponseHandler().handleResponse(response);
-      if (responseBody == null) {
-        responseBody = "";
-      }
-    } catch (HttpResponseException e) {
-      System.err.println(e.getMessage());
-      responseBody = e.getMessage();
+    HttpEntity entity = response.getEntity();
+    byte[] responseBody = new byte[0];
+    if (entity != null) {
+      responseBody = toByteArray(entity.getContent());
     }
-    return responseBody;
+    return new String(responseBody);
   }
 
   public int getResponseStatusCode() {

@@ -7,7 +7,6 @@ public class GETEchoHandler extends Handler {
   public Response getResponse(Request request) {
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody("")
       .build();
   }
 }

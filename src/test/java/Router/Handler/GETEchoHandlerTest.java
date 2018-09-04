@@ -5,13 +5,13 @@ import Request.Request;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class GETEchoHandlerTest {
   private String CRLF = "\r\n";
 
   @Test
   public void handlerReturnResponseBody() {
-    Handler handler = new GETEchoHandler();
     String requestString = "GET /echo HTTP/1.1" + CRLF +
       "Content-Type: text/plain" + CRLF +
       "content-length: 5" + CRLF + CRLF +
@@ -19,7 +19,7 @@ public class GETEchoHandlerTest {
 
     Router router = new Router();
     Request request = new Request(requestString).build();
-    assertEquals("", router.handleRequest(request).body);
+    assertNull(router.handleRequest(request).body);
   }
 
   @Test
@@ -34,14 +34,4 @@ public class GETEchoHandlerTest {
     assertEquals(200, handler.getResponse(request).statusCode);
   }
 
-  @Test
-  public void handlerReturnResponseContentLength() {
-    Handler handler = new GETEchoHandler();
-    String requestString = "GET /echo HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF +
-      "content-length: 5" + CRLF + CRLF +
-      "hello";
-    Request request = new Request(requestString).build();
-    assertEquals(0, handler.getResponse(request).contentLength);
-  }
 }

@@ -12,7 +12,7 @@ public class GETFormDataHandler extends Handler {
     }
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(body)
+      .setBody(body.getBytes())
       .build();
   }
 }
