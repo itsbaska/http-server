@@ -12,6 +12,7 @@ import cucumber.api.java.en.When;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -132,6 +133,7 @@ public class HTTPClientStepDefinitions {
       "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
       "<li><a href=\"/image.jpeg\">image.jpeg</a></li>\n" +
       "<li><a href=\"/file1\">file1</a></li>\n" +
+      "<li><a href=\"/partial_content.txt\">partial_content.txt</a></li>\n" +
       "<li><a href=\"/image.png\">image.png</a></li>\n" +
       "</ul>\n" +
       "</body>\n" +
@@ -198,8 +200,20 @@ public class HTTPClientStepDefinitions {
   }
 
   @Then("^the response body has file contents \"([^\"]*)\"$")
-  public void theResponseBodyHasImageFileContents(String file) throws Throwable {
+  public void theResponseBodyHasFileContents(String file) throws Throwable {
     FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + file));
     assertEquals(client.getResponseBody(), new String(fileHandler.readContent()));
+  }
+
+  @And("^I specify a range \"([^\"]*)\"$")
+  public void iSpecifyARange(String range) throws IOException, URISyntaxException {
+    client.requestWithRange("/partial_content.txt", range);
+  }
+
+  @And("^the body should include partial contents from (\\d+) to (\\d+)$")
+  public void theBodyShouldIncludePartialContentsFromRange_startToRange_end(int start, int end) throws Throwable {
+    FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + "/partial_content.txt"));
+    String partialContent = new String(fileHandler.readContent()).substring(start, end);
+    assertEquals(client.getResponseBody(), partialContent);
   }
 }
