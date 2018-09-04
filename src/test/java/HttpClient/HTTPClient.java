@@ -31,6 +31,7 @@ public class HTTPClient {
   private final String host;
   private CloseableHttpClient client;
   private CloseableHttpResponse response;
+  private HttpGet httpGet;
 
   public HTTPClient(int port, String host) {
     this.port = port;
@@ -57,13 +58,13 @@ public class HTTPClient {
       .build();
   }
 
-  public CloseableHttpResponse get(String path) throws IOException, URISyntaxException {
-    HttpGet httpGet = new HttpGet(uri(path));
-    return response = client.execute(httpGet);
+  public void get(String path) throws IOException, URISyntaxException {
+    httpGet = new HttpGet(uri(path));
+    response = client.execute(httpGet);
   }
 
   public void getWithAuth(String path) throws URISyntaxException, IOException {
-    HttpGet httpGet = new HttpGet(uri(path));
+    httpGet = new HttpGet(uri(path));
     Credential credential = new Credential("one", "two");
     httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
     response = client.execute(httpGet);
@@ -103,6 +104,12 @@ public class HTTPClient {
   public void invalid(String method, String path) throws IOException, URISyntaxException {
     InvalidRequest request = new InvalidRequest(method, uri(path).toString());
     response = client.execute(request);
+  }
+
+  public void requestWithRange(String path, String range) throws URISyntaxException, IOException {
+    httpGet = new HttpGet(uri(path));
+    httpGet.setHeader("Content-Range", range);
+    response = client.execute(httpGet);
   }
 
   public void redirect(String path) throws IOException, URISyntaxException {
