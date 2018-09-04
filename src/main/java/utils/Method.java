@@ -6,7 +6,8 @@ public enum Method {
   PUT,
   OPTIONS,
   HEAD,
-  DELETE;
+  DELETE,
+  PATCH;
 
   public static Method toMethod(String stringMethod) {
     switch (stringMethod) {
@@ -22,6 +23,8 @@ public enum Method {
         return HEAD;
       case "DELETE":
         return DELETE;
+      case "PATCH":
+        return PATCH;
       default:
           throw new InvalidRequestException("Request Method Not Found");
     }

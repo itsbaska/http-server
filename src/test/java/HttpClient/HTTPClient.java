@@ -31,6 +31,7 @@ public class HTTPClient {
   private final String host;
   private CloseableHttpClient client;
   private CloseableHttpResponse response;
+  private HttpPatch httpPatch;
 
   public HTTPClient(int port, String host) {
     this.port = port;
@@ -57,9 +58,9 @@ public class HTTPClient {
       .build();
   }
 
-  public CloseableHttpResponse get(String path) throws IOException, URISyntaxException {
+  public void get(String path) throws IOException, URISyntaxException {
     HttpGet httpGet = new HttpGet(uri(path));
-    return response = client.execute(httpGet);
+    response = client.execute(httpGet);
   }
 
   public void getWithAuth(String path) throws URISyntaxException, IOException {
@@ -103,6 +104,17 @@ public class HTTPClient {
   public void invalid(String method, String path) throws IOException, URISyntaxException {
     InvalidRequest request = new InvalidRequest(method, uri(path).toString());
     response = client.execute(request);
+  }
+
+  public HttpPatch patch(String content, String path) throws URISyntaxException, IOException {
+    httpPatch = new HttpPatch(uri(path));
+    httpPatch.setEntity(new StringEntity(content));
+    return httpPatch;
+  }
+
+  public void setEtag(String etag) throws URISyntaxException, IOException {
+    httpPatch.setHeader("ETag", etag);
+    response = client.execute(httpPatch);
   }
 
   public void redirect(String path) throws IOException, URISyntaxException {
