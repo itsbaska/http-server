@@ -64,6 +64,7 @@ public class Config {
     for (String fileName : directory.getFileNames()) {
       routes.add(GET, "/" + fileName, new GETFileHandler(fileName));
     }
+    routes.add(PATCH, "/patch-content.txt", new PATCHFileHandler("patch-content.txt"));
   }
 
   public static String setPort(String[] args) throws IOException {

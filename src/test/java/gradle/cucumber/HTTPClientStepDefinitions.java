@@ -130,6 +130,7 @@ public class HTTPClientStepDefinitions {
       "<ul>\n" +
       "<li><a href=\"/text-file.txt\">text-file.txt</a></li>\n" +
       "<li><a href=\"/file2\">file2</a></li>\n" +
+      "<li><a href=\"/patch-content.txt\">patch-content.txt</a></li>\n" +
       "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
       "<li><a href=\"/image.jpeg\">image.jpeg</a></li>\n" +
       "<li><a href=\"/file1\">file1</a></li>\n" +
@@ -205,6 +206,27 @@ public class HTTPClientStepDefinitions {
     assertEquals(client.getResponseBody(), new String(fileHandler.readContent()));
   }
 
+  @And("^the file content is set back to \"([^\"]*)\"$")
+  public void theFileContentIsSetBackTo(String defaultContent) throws Throwable {
+    assertTrue(client.getResponseBody().contains(defaultContent));
+  }
+
+  @When("^I \"PATCH\" \"([^\"]*)\" to \"([^\"]*)\"$")
+  public void iPatchTo(String content, String path) throws Throwable {
+    client.patch(content, path);
+  }
+
+  @And("^I set the etag to \"([^\"]*)\"$")
+  public void iSetTheEtagTo(String etag) throws Throwable {
+    client.setEtag(etag);
+  }
+
+  @And("^\"([^\"]*)\" has original contents \"([^\"]*)\"$")
+  public void hasOriginalContents(String fileName, String content) throws Throwable {
+    FileHandler file = new FileHandler(new File(Config.publicDirectory.getPath() + "/" + fileName));
+    assertEquals(content, new String(file.readContent()));
+  }
+  
   @And("^I specify a range \"([^\"]*)\"$")
   public void iSpecifyARange(String range) throws IOException, URISyntaxException {
     client.requestWithRange("/partial_content.txt", range);

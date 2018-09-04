@@ -31,7 +31,7 @@ public class HTTPClient {
   private final String host;
   private CloseableHttpClient client;
   private CloseableHttpResponse response;
-  private HttpGet httpGet;
+  private HttpPatch httpPatch;
 
   public HTTPClient(int port, String host) {
     this.port = port;
@@ -59,7 +59,7 @@ public class HTTPClient {
   }
 
   public void get(String path) throws IOException, URISyntaxException {
-    httpGet = new HttpGet(uri(path));
+    HttpGet httpGet = new HttpGet(uri(path));
     response = client.execute(httpGet);
   }
 
@@ -106,12 +106,23 @@ public class HTTPClient {
     response = client.execute(request);
   }
 
+  public HttpPatch patch(String content, String path) throws URISyntaxException, IOException {
+    httpPatch = new HttpPatch(uri(path));
+    httpPatch.setEntity(new StringEntity(content));
+    return httpPatch;
+  }
+
+  public void setEtag(String etag) throws URISyntaxException, IOException {
+    httpPatch.setHeader("ETag", etag);
+    response = client.execute(httpPatch);
+  }
+  
   public void requestWithRange(String path, String range) throws URISyntaxException, IOException {
     httpGet = new HttpGet(uri(path));
     httpGet.setHeader("Content-Range", range);
     response = client.execute(httpGet);
   }
-
+  
   public void redirect(String path) throws IOException, URISyntaxException {
     HttpClientContext context = HttpClientContext.create();
     HttpGet httpGet = new HttpGet(uri(path));

@@ -18,6 +18,16 @@ public class FileHandler extends Handler {
     this.file = file;
   }
 
+  public void updateContent(String text) {
+    try {
+      FileWriter writer = new FileWriter(file);
+      writer.write(text);
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void addContent(String text) {
     try {
       FileWriter writer = new FileWriter(file, true);
