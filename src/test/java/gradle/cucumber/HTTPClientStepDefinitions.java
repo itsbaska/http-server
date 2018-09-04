@@ -192,4 +192,9 @@ public class HTTPClientStepDefinitions {
   public void iRequestPut(String path) throws Throwable {
     client.invalid("POST", path);
   }
+
+  @Then("^the response body has file contents \"([^\"]*)\"$")
+  public void theResponseBodyHasFileContents(String file) throws Throwable {
+    assertEquals(client.getResponseBody(), "This is file1");
+  }
 }
