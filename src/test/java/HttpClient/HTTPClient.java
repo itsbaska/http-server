@@ -1,6 +1,6 @@
 package HttpClient;
 
-import Request.Credential;
+import server.Request.Credential;
 import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -64,7 +64,7 @@ public class HTTPClient {
   }
 
   public void getWithAuth(String path) throws URISyntaxException, IOException {
-    httpGet = new HttpGet(uri(path));
+    HttpGet httpGet = new HttpGet(uri(path));
     Credential credential = new Credential("one", "two");
     httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
     response = client.execute(httpGet);
@@ -118,7 +118,7 @@ public class HTTPClient {
   }
   
   public void requestWithRange(String path, String range) throws URISyntaxException, IOException {
-    httpGet = new HttpGet(uri(path));
+    HttpGet httpGet = new HttpGet(uri(path));
     httpGet.setHeader("Content-Range", range);
     response = client.execute(httpGet);
   }
@@ -162,9 +162,5 @@ public class HTTPClient {
       }
     }
     return headerValues;
-  }
-
-  public void closeClient() {
-    HttpClientUtils.closeQuietly(client);
   }
 }

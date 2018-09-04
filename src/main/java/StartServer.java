@@ -1,5 +1,5 @@
-import Config.Config;
-import Server.Server;
+import application.config.Config;
+import server.Server;
 
 import java.io.IOException;
 
