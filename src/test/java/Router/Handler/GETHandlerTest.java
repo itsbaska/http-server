@@ -16,13 +16,4 @@ public class GETHandlerTest {
     Request request = new Request(requestString).build();
     assertEquals(200, handler.getResponse(request).statusCode);
   }
-
-  @Test
-  public void handle() {
-    Handler handler = new GETHandler();
-    String requestString = "GET / HTTP/1.1" + CRLF +
-      "Content-Type: text/plain" + CRLF;
-    Request request = new Request(requestString).build();
-    assertEquals(0, handler.getResponse(request).contentLength);
-  }
 }

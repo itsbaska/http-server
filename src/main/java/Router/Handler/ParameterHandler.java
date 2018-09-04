@@ -9,7 +9,7 @@ public class ParameterHandler extends Handler {
     String body = Parameters.format(request.parameters).toString();
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(body)
+      .setBody(body.getBytes())
       .build();
   }
 }

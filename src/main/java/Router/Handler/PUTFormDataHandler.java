@@ -10,7 +10,7 @@ public class PUTFormDataHandler extends Handler {
     Config.storage.update(1, new Data(request.body));
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(Config.storage.find(1).body)
+      .setBody(Config.storage.find(1).body.getBytes())
       .build();
   }
 }

@@ -1,5 +1,7 @@
 package Response;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -7,9 +9,8 @@ import java.util.Set;
 public class Response {
   public HashMap<String, String> headers;
   public int statusCode;
-  public int contentLength;
-  public String body;
-  String CRLF = "\r\n";
+  public byte[] body;
+  private String CRLF = "\r\n";
 
 
   public Response(Builder builder) {
@@ -18,18 +19,20 @@ public class Response {
     this.headers = builder.headers;
   }
 
-  public String stringify() {
+  private String stringify() {
     return "HTTP/1.1 " + this.statusCode + CRLF +
-      formatHeaders(headers) + CRLF +
-      setBody(body);
+      formatHeaders(headers) + CRLF;
   }
 
-  private String setBody(String body) {
-    String responseBody = "";
-    if (body != null) {
-      responseBody = body;
+  public byte[] responseBytes() {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    try {
+      outputStream.write(stringify().getBytes());
+      outputStream.write(body == null ? "".getBytes() : body);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-    return responseBody;
+    return outputStream.toByteArray();
   }
 
   private String formatHeaders(HashMap<String, String> headers) {
@@ -45,7 +48,7 @@ public class Response {
 
   public static class Builder {
     private int statusCode;
-    private String body;
+    private byte[] body;
     private HashMap<String, String> headers = new HashMap<>();
 
     public Builder setStatusCode(int code) {
@@ -58,7 +61,7 @@ public class Response {
       return this;
     }
 
-    public Builder setBody(String body) {
+    public Builder setBody(byte[] body) {
       this.body = body;
       return this;
     }

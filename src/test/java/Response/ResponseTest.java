@@ -3,31 +3,18 @@ package Response;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ResponseTest {
 
   @Test
-  public void testResponseStringify() {
-    Response response = new Response.Builder()
-      .setBody("hello")
-      .setStatusCode(200)
-      .build();
-    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
-      "\r\n" +
-      "hello");
-  }
-
-  @Test
   public void testResponseStringifyWithHeaders() {
     Response response = new Response.Builder()
-      .setBody("hello")
+      .setBody("hello".getBytes())
       .setHeader("Allow", "GET")
       .setStatusCode(200)
       .build();
-    assertEquals(response.stringify(), "HTTP/1.1 200\r\n" +
-      "Allow: GET\r\n" +
-      "\r\n" +
-      "hello");
+    assertEquals(new String(response.responseBytes()), "HTTP/1.1 200\r\nAllow: GET\r\n\r\nhello");
   }
 
   @Test
@@ -35,25 +22,23 @@ public class ResponseTest {
     Response response = new Response.Builder()
       .setHeader("Allow", "GET")
       .setStatusCode(200)
-      .setBody("")
       .build();
-    assertEquals(response.body, "");
+    assertNull(response.body);
   }
-
 
   @Test
   public void testResponseBody() {
     Response response = new Response.Builder()
-      .setBody("hello")
+      .setBody("hello".getBytes())
       .setStatusCode(200)
       .build();
-    assertEquals(response.body,"hello");
+    assertEquals(new String(response.body), "hello");
   }
 
   @Test
   public void testResponseStatusCode() {
     Response response = new Response.Builder()
-      .setBody("hello")
+      .setBody("hello".getBytes())
       .setStatusCode(200)
       .build();
     assertEquals(response.statusCode, 200);

@@ -18,6 +18,7 @@ public class FileHandlerTest {
     files.add("file1");
     files.add("file2");
     files.add("image.gif");
+    files.add("image.jpeg");
     files.add("image.png");
     files.add("text-file.txt");
 

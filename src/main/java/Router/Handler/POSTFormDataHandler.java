@@ -10,7 +10,7 @@ public class POSTFormDataHandler extends Handler {
     Config.storage.add(new Data(request.body));
     return new Response.Builder()
       .setStatusCode(200)
-      .setBody(Config.storage.find(1).body)
+      .setBody(Config.storage.find(1).body.getBytes())
       .build();
   }
 }
