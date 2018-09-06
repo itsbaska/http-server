@@ -1,9 +1,9 @@
 package gradle.cucumber;
 
-import application.config.Config;
-import server.Directory.FileHandler;
+import http_server_app.application.config.Config;
+import http_server_app.server.Directory.FileHandler;
 import HttpClient.HTTPClient;
-import server.Server;
+import http_server_app.server.Server;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -159,6 +159,7 @@ public class HTTPClientStepDefinitions {
       "</html>";
     String body = client.getResponseBody();
     System.out.println(body);
+
     assertEquals(htmlDoc, body);
   }
 

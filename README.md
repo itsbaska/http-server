@@ -11,22 +11,21 @@
 #### Cloning Project
 
 ```
-$ git clone git@github.com:itsbaska/http-server.git
+git clone git@github.com:itsbaska/http-server.git
 ```
 
 ## Running server
 
-Running server on default PORT 5000:
+Running server on default PORT 3000:
 ```
-$ cd http-server
-$ gradle run
+cd http-server
+gradle run
 ```
 
 Running server on custom PORT:
 ```
-$ cd http-server/src/main/java
-$ javac StartServer.java
-$ java StartServer -p [PORT]
+gradle build
+java -jar build/libs/http-server-all.jar -p <PORT>
 ```
 ## Running Tests
 All Tests

@@ -1,10 +1,12 @@
 package application.controller.Handler;
 
-import server.Request.Request;
+import http_server_app.application.controller.Handler.Handler;
+import http_server_app.application.controller.Handler.RootHandler;
+import http_server_app.server.Request.Request;
 import org.junit.Test;
 
+import static http_server_app.server.utils.StatusCode.OK;
 import static org.junit.Assert.assertEquals;
-import static server.utils.StatusCode.OK;
 
 public class RootHandlerTest {
   private String CRLF = "\r\n";
@@ -42,6 +44,8 @@ public class RootHandlerTest {
       "</ul>\n" +
       "</body>\n" +
       "</html>";
-    assertEquals(rootContent, new String(handler.get(request).body));
+    String expected = new String(handler.get(request).body);
+    System.out.println(expected);
+    assertEquals(rootContent, expected);
   }
 }

@@ -1,12 +1,14 @@
 package application.controller.Handler;
 
-import application.controller.Controller;
-import server.Request.Request;
+import http_server_app.application.controller.Controller;
+import http_server_app.application.controller.Handler.EchoHandler;
+import http_server_app.application.controller.Handler.Handler;
+import http_server_app.server.Request.Request;
 import org.junit.Test;
 
+import static http_server_app.server.utils.StatusCode.OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static server.utils.StatusCode.OK;
 
 public class EchoHandlerTest {
   private String CRLF = "\r\n";

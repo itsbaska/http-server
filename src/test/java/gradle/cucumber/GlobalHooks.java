@@ -1,6 +1,6 @@
 package gradle.cucumber;
 
-import server.Server;
+import http_server_app.server.Server;
 import cucumber.api.java.Before;
 
 public class GlobalHooks {
