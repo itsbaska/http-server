@@ -1,11 +1,13 @@
 package application.controller.Handler;
 
+import http_server_app.application.controller.Handler.OPTIONS2Handler;
+import http_server_app.application.controller.Handler.OPTIONSHandler;
+import http_server_app.server.Request.Request;
+import http_server_app.server.Response.Response;
 import org.junit.Test;
-import server.Request.Request;
-import server.Response.Response;
 
+import static http_server_app.server.utils.StatusCode.OK;
 import static org.junit.Assert.assertEquals;
-import static server.utils.StatusCode.OK;
 
 public class OPTIONS2HandlerTest {
   @Test

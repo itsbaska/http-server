@@ -1,7 +1,7 @@
 package server.Directory;
 
 import org.junit.Test;
-import server.Request.Range;
+import http_server_app.server.Request.Range;
 
 import static org.junit.Assert.*;
 

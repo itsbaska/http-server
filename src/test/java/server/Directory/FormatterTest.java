@@ -1,10 +1,11 @@
 package server.Directory;
 
+import http_server_app.server.Directory.Formatter;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class FormatterTest {
 

@@ -1,7 +1,7 @@
 package application.controller;
 
-import server.Request.Request;
-import server.Request.Credential;
+import http_server_app.server.Request.Request;
+import http_server_app.server.Request.Credential;
 import org.junit.Test;
 
 public class CredentialTest {

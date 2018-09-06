@@ -46,11 +46,25 @@ sourceSets {
 
 apply plugin: 'java'
 
+jar {
+    manifest {
+        attributes (
+                'Main-Class': 'http_server_app.StartServer'
+        )
+    }
+    baseName = project.name + '-all'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
 
 task run(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'StartServer'
-    args '-p', '5000'
+    main = 'http_server_app.StartServer'
+    args '-p', '3000'
 }
 
 task cucumber() {

@@ -1,6 +1,7 @@
 package server.Directory;
 
-import application.config.Config;
+import http_server_app.application.config.Config;
+import http_server_app.server.Directory.Directory;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -1,7 +1,8 @@
 package server.Routes;
 
-import application.controller.Handler.EchoHandler;
-import application.controller.Handler.RootHandler;
+import http_server_app.application.controller.Handler.EchoHandler;
+import http_server_app.application.controller.Handler.RootHandler;
+import http_server_app.server.Routes.Route;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

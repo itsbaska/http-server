@@ -1,10 +1,11 @@
 package server.Response;
 
+import http_server_app.server.Response.Response;
 import org.junit.Test;
 
+import static http_server_app.server.utils.StatusCode.OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static server.utils.StatusCode.OK;
 
 public class ResponseTest {
 

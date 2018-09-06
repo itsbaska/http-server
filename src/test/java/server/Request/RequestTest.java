@@ -1,9 +1,10 @@
 package server.Request;
 
+import http_server_app.server.Request.Request;
 import org.junit.Test;
 
-import static server.utils.Method.POST;
-import static org.junit.Assert.*;
+import static http_server_app.server.utils.Method.POST;
+import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
   private String CRLF = "\r\n";

@@ -1,6 +1,6 @@
 package HttpClient;
 
-import server.Request.Credential;
+import http_server_app.server.Request.Credential;
 import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;

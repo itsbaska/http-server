@@ -1,10 +1,11 @@
 package application.controller.Handler;
 
+import http_server_app.application.controller.Handler.RedirectHandler;
+import http_server_app.server.Request.Request;
+import http_server_app.server.Response.Response;
 import org.junit.Test;
-import server.Request.Request;
-import server.Response.Response;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RedirectHandlerTest {
   @Test
