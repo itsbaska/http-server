@@ -1,9 +1,9 @@
 package gradle.cucumber;
 
-import Config.Config;
-import Directory.FileHandler;
+import application.config.Config;
+import server.Directory.FileHandler;
 import HttpClient.HTTPClient;
-import Server.Server;
+import server.Server;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -38,50 +38,10 @@ public class HTTPClientStepDefinitions {
   public void serverIsRunning() {
   }
 
-  @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
-  public void iRequestOnPort(String path, String port) throws Throwable {
-    client = new HTTPClient(Integer.parseInt(port), HOST);
+  @Given("^the page content of \"([^\"]*)\" is empty$")
+  public void thePageContentOfIsEmpty(String path) throws Throwable {
     client.get(path);
-  }
-
-  @When("^I request \"GET\" \"([^\"]*)\"$")
-  public void iRequest(String path) throws Throwable {
-    client.get(path);
-  }
-
-  @When("^I \"POST\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iPostTo(String body, String path) throws Throwable {
-    client.post(body, path);
-  }
-
-  @When("^I \"PUT\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iPutTo(String body, String path) throws Throwable {
-    client.put(body, path);
-  }
-
-  @When("^I request \"OPTIONS\" \"([^\"]*)\"$")
-  public void iRequestOptions(String path) throws Throwable {
-    client.options(path);
-  }
-
-  @When("^I request \"HEAD\" \"([^\"]*)\"$")
-  public void iRequestHead(String path) throws Throwable {
-    client.head(path);
-  }
-
-  @Then("^the response status should be (\\d+)$")
-  public void theResponseStatusShouldBe(int status) {
-    assertEquals(status, client.getResponseStatusCode());
-  }
-
-  @And("^the response body should be \"([^\"]*)\"$")
-  public void theResponseBodyShouldBe(String responseBody) throws IOException {
-    assertEquals(responseBody, client.getResponseBody());
-  }
-
-  @And("the response body should be empty")
-  public void the_response_body_should_be_empty() throws IOException {
-    assertEquals("", client.getResponseBody());
+    assertEquals(client.getResponseBody(), "");
   }
 
   @Given("^I am in a console shell$")
@@ -104,6 +64,64 @@ public class HTTPClientStepDefinitions {
         e.printStackTrace();
       }
     }
+  }
+
+  @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
+  public void iRequestOnPort(String path, String port) throws Throwable {
+    client = new HTTPClient(Integer.parseInt(port), HOST);
+    client.get(path);
+  }
+
+  @When("^I \"([^\"]*)\" \"([^\"]*)\" to \"([^\"]*)\"$")
+  public void iRequestTo(String method, String body, String path) throws Throwable {
+    switch (method) {
+      case "POST":
+        client.post(body, path);
+        break;
+      case "PUT":
+        client.put(body, path);
+        break;
+      case  "PATCH":
+        client.patch(body, path);
+        break;
+    }
+  }
+
+  @When("^I request \"([^\"]*)\" \"([^\"]*)\"$")
+  public void iRequest(String method, String path) throws Throwable {
+    switch (method) {
+      case "GET":
+        client.get(path);
+        break;
+      case "OPTIONS":
+        client.options(path);
+        break;
+      case "HEAD":
+        client.head(path);
+        break;
+      case "DELETE":
+        client.delete(path);
+        break;
+      default:
+        client.invalid(method, path);
+        break;
+    }
+  }
+
+
+  @Then("^the response status should be (\\d+)$")
+  public void theResponseStatusShouldBe(int status) {
+    assertEquals(status, client.getResponseStatusCode());
+  }
+
+  @And("^the response body should be \"([^\"]*)\"$")
+  public void theResponseBodyShouldBe(String responseBody) throws IOException {
+    assertEquals(responseBody, client.getResponseBody());
+  }
+
+  @And("the response body should be empty")
+  public void the_response_body_should_be_empty() throws IOException {
+    assertEquals("", client.getResponseBody());
   }
 
   @And("^the response header should include \"([^\"]*)\" \"([^\"]*)\"$")
@@ -140,6 +158,7 @@ public class HTTPClientStepDefinitions {
       "</body>\n" +
       "</html>";
     String body = client.getResponseBody();
+    System.out.println(body);
     assertEquals(htmlDoc, body);
   }
 
@@ -174,32 +193,6 @@ public class HTTPClientStepDefinitions {
     assertTrue(client.getResponseBody().contains(parameter));
   }
 
-  @When("^I request \"DELETE\" \"([^\"]*)\"$")
-  public void iRequestDelete(String path) throws Throwable {
-    client.delete(path);
-  }
-
-  @Given("^the page content of \"([^\"]*)\" is empty$")
-  public void thePageContentOfIsEmpty(String path) throws Throwable {
-    client.get(path);
-    assertEquals(client.getResponseBody(), "");
-  }
-
-  @When("^I request \"SOMETHING\" \"([^\"]*)\"$")
-  public void iRequestSomething(String path) throws Throwable {
-   client.invalid("SOMETHING", path);
-  }
-
-  @When("^I request \"PUT\" \"([^\"]*)\"$")
-  public void iRequestPost(String path) throws Throwable {
-    client.invalid("PUT", path);
-  }
-
-  @When("^I request \"POST\" \"([^\"]*)\"$")
-  public void iRequestPut(String path) throws Throwable {
-    client.invalid("POST", path);
-  }
-
   @Then("^the response body has file contents \"([^\"]*)\"$")
   public void theResponseBodyHasFileContents(String file) throws Throwable {
     FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + file));
@@ -209,11 +202,6 @@ public class HTTPClientStepDefinitions {
   @And("^the file content is set back to \"([^\"]*)\"$")
   public void theFileContentIsSetBackTo(String defaultContent) throws Throwable {
     assertTrue(client.getResponseBody().contains(defaultContent));
-  }
-
-  @When("^I \"PATCH\" \"([^\"]*)\" to \"([^\"]*)\"$")
-  public void iPatchTo(String content, String path) throws Throwable {
-    client.patch(content, path);
   }
 
   @And("^I set the etag to \"([^\"]*)\"$")
@@ -226,7 +214,7 @@ public class HTTPClientStepDefinitions {
     FileHandler file = new FileHandler(new File(Config.publicDirectory.getPath() + "/" + fileName));
     assertEquals(content, new String(file.readContent()));
   }
-  
+
   @And("^I specify a range \"([^\"]*)\"$")
   public void iSpecifyARange(String range) throws IOException, URISyntaxException {
     client.requestWithRange("/partial_content.txt", range);

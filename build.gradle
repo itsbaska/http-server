@@ -36,7 +36,16 @@ repositories {
     mavenCentral()
 
 }
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
+
 apply plugin: 'java'
+
 
 task run(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath

@@ -1,4 +1,4 @@
-# HTTP Server
+# HTTP server
 
 
 ## Getting Started
@@ -14,7 +14,7 @@
 $ git clone git@github.com:itsbaska/http-server.git
 ```
 
-## Running Server
+## Running server
 
 Running server on default PORT 5000:
 ```
