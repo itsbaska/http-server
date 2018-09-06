@@ -1,5 +1,6 @@
 package gradle.cucumber;
 
+import http_server_app.application.config.Config;
 import http_server_app.server.Server;
 import cucumber.api.java.Before;
 
@@ -15,7 +16,7 @@ public class GlobalHooks {
         serverIsRunning = false;
       }));
       try {
-        server = new Server("3000");
+        server = new Server(Config.DEFAULT_PORT);
         Thread thread = new Thread(server);
         thread.start();
         serverIsRunning = true;

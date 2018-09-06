@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static http_server_app.server.utils.StatusCode.OK;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RootHandlerTest {
   private String CRLF = "\r\n";
@@ -21,31 +22,18 @@ public class RootHandlerTest {
   }
 
   @Test
-  public void testGETRootBodyToHaveDirecoryContents() {
+  public void testGETRootBodyToHaveDirectoryContents() {
     Handler handler = new RootHandler();
     String requestString = "GET / HTTP/1.1" + CRLF;
     Request request = new Request(requestString).build();
-    String rootContent = "<!DOCTYPE html>\n" +
-      "<html lang=\"en\">\n" +
-      "<head>\n" +
-      "    <meta charset=\"UTF-8\">\n" +
-      "    <title>Title</title>\n" +
-      "</head>\n" +
-      "<body>\n" +
-      "<ul>\n" +
-      "<li><a href=\"/text-file.txt\">text-file.txt</a></li>\n" +
-      "<li><a href=\"/file2\">file2</a></li>\n" +
-      "<li><a href=\"/patch-content.txt\">patch-content.txt</a></li>\n" +
-      "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
-      "<li><a href=\"/image.jpeg\">image.jpeg</a></li>\n" +
-      "<li><a href=\"/file1\">file1</a></li>\n" +
-      "<li><a href=\"/partial_content.txt\">partial_content.txt</a></li>\n" +
-      "<li><a href=\"/image.png\">image.png</a></li>\n" +
-      "</ul>\n" +
-      "</body>\n" +
-      "</html>";
     String expected = new String(handler.get(request).body);
-    System.out.println(expected);
-    assertEquals(rootContent, expected);
+    assertTrue(expected.contains("text-file.txt"));
+    assertTrue(expected.contains("file1"));
+    assertTrue(expected.contains("file2"));
+    assertTrue(expected.contains("patch-content.txt"));
+    assertTrue(expected.contains("image.gif"));
+    assertTrue(expected.contains("image.jpeg"));
+    assertTrue(expected.contains("image.png"));
+    assertTrue(expected.contains("partial_content.txt"));
   }
 }
