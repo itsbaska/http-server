@@ -138,29 +138,15 @@ public class HTTPClientStepDefinitions {
 
   @And("^the response body contains all of the files and directory contents in \"([^\"]*)\"$")
   public void theResponseBodyContainsAllOfTheFilesAndDirectoryContentsIn(String directory) throws Throwable {
-    String htmlDoc = "<!DOCTYPE html>\n" +
-      "<html lang=\"en\">\n" +
-      "<head>\n" +
-      "    <meta charset=\"UTF-8\">\n" +
-      "    <title>Title</title>\n" +
-      "</head>\n" +
-      "<body>\n" +
-      "<ul>\n" +
-      "<li><a href=\"/text-file.txt\">text-file.txt</a></li>\n" +
-      "<li><a href=\"/file2\">file2</a></li>\n" +
-      "<li><a href=\"/patch-content.txt\">patch-content.txt</a></li>\n" +
-      "<li><a href=\"/image.gif\">image.gif</a></li>\n" +
-      "<li><a href=\"/image.jpeg\">image.jpeg</a></li>\n" +
-      "<li><a href=\"/file1\">file1</a></li>\n" +
-      "<li><a href=\"/partial_content.txt\">partial_content.txt</a></li>\n" +
-      "<li><a href=\"/image.png\">image.png</a></li>\n" +
-      "</ul>\n" +
-      "</body>\n" +
-      "</html>";
     String body = client.getResponseBody();
-    System.out.println(body);
-
-    assertEquals(htmlDoc, body);
+    assertTrue(body.contains("text-file.txt"));
+    assertTrue(body.contains("file1"));
+    assertTrue(body.contains("file2"));
+    assertTrue(body.contains("patch-content.txt"));
+    assertTrue(body.contains("image.gif"));
+    assertTrue(body.contains("image.jpeg"));
+    assertTrue(body.contains("image.png"));
+    assertTrue(body.contains("partial_content.txt"));
   }
 
   @And("^the response body has directory link \"([^\"]*)\"$")
