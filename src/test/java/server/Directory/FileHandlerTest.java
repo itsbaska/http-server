@@ -2,8 +2,10 @@ package server.Directory;
 
 import http_server_app.application.config.Config;
 import http_server_app.server.Directory.Directory;
+import http_server_app.server.Directory.FileHandler;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,5 +37,17 @@ public class FileHandlerTest {
     actualList.removeAll( listOne );
 
     assertEquals(expectedList, actualList);
+  }
+
+  @Test
+  public void getFileExtention() {
+    FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + "/image.gif"));
+    assertEquals("gif", fileHandler.getFileExtension());
+  }
+
+  @Test
+  public void getFileExtentionWhenNoExtension() {
+    FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + "file1"));
+    assertEquals("", fileHandler.getFileExtension());
   }
 }
