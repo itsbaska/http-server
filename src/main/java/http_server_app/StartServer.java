@@ -4,7 +4,6 @@ import http_server_app.application.config.Config;
 import http_server_app.server.Server;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class StartServer {
   public static void main(String[] args) throws IOException {
