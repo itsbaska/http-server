@@ -18,6 +18,15 @@ public class FileHandler extends Handler {
     this.file = file;
   }
 
+  public String getFileExtension() {
+    String fileName = this.file.getName();
+    String extension = "";
+    if (fileName.split("\\.").length > 1) {
+      extension = fileName.split("\\.")[1];
+    }
+    return extension;
+  }
+
   public void updateContent(String text) {
     try {
       FileWriter writer = new FileWriter(file);

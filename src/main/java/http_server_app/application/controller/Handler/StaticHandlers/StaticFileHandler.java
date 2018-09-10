@@ -5,6 +5,7 @@ import http_server_app.server.Directory.FileHandler;
 import http_server_app.server.Request.Range;
 import http_server_app.server.Request.Request;
 import http_server_app.server.Response.Response;
+import http_server_app.server.utils.MimeType;
 
 import java.io.File;
 
@@ -23,6 +24,7 @@ public class StaticFileHandler extends Handler {
     else {
       return new Response.Builder()
         .setStatusCode(OK)
+        .setHeader("Content-type", MimeType.getType(file.getFileExtension()))
         .setBody(file.readContent())
         .build();
     }
