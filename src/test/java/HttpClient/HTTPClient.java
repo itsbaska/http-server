@@ -5,7 +5,6 @@ import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
@@ -15,6 +14,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -58,76 +58,159 @@ public class HTTPClient {
       .build();
   }
 
-  public void get(String path) throws IOException, URISyntaxException {
+  public void get(String path) throws URISyntaxException {
     HttpGet httpGet = new HttpGet(uri(path));
-    response = client.execute(httpGet);
+    try {
+      response = client.execute(httpGet);
+    } catch (IOException e) {
+      retryRequest(httpGet);
+    }
   }
 
-  public void getWithAuth(String path) throws URISyntaxException, IOException {
+  private void retryRequest(HttpRequestBase request) {
+    try {
+      Thread.sleep(1000);
+      response = client.execute(request);
+    } catch (IOException | InterruptedException e1) {
+      try {
+        Thread.sleep(3000);
+        response = client.execute(request);
+      } catch (IOException | InterruptedException e2) {
+        e2.printStackTrace();
+      }
+    }
+  }
+
+  private void retryRequestWithContext(HttpRequestBase request, HttpClientContext context) {
+    try {
+      Thread.sleep(1000);
+      response = client.execute(request, context);
+    } catch (IOException | InterruptedException e1) {
+      e1.printStackTrace();
+      try {
+        Thread.sleep(3000);
+        response = client.execute(request, context);
+      } catch (IOException | InterruptedException e2) {
+        e2.printStackTrace();
+      }
+    }
+  }
+
+  public void getWithAuth(String path) throws URISyntaxException {
     HttpGet httpGet = new HttpGet(uri(path));
     Credential credential = new Credential("one", "two");
     httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
-    response = client.execute(httpGet);
+    try {
+      response = client.execute(httpGet);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpGet);
+    }
   }
 
-  public void post(String body, String path) throws IOException, URISyntaxException {
+  public void post(String body, String path) throws URISyntaxException, UnsupportedEncodingException {
     HttpPost httpPost = new HttpPost(uri(path));
     httpPost.setEntity(new StringEntity(body));
-    response = client.execute(httpPost);
+    try {
+      response = client.execute(httpPost);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpPost);
+    }
   }
 
-  public void options(String path) throws IOException, URISyntaxException {
+  public void options(String path) throws URISyntaxException {
     HttpOptions httpOptions = new HttpOptions(uri(path));
-    response = client.execute(httpOptions);
+    try {
+      response = client.execute(httpOptions);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpOptions);
+    }
   }
 
-  public void put(String body, String path) throws IOException, URISyntaxException {
+  public void put(String body, String path) throws URISyntaxException {
     HttpPut httpPut = new HttpPut(uri(path));
     List<NameValuePair> formParams = new ArrayList<>();
     formParams.add(new BasicNameValuePair(parseFormData(body)[0], parseFormData(body)[1]));
     UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
     httpPut.setEntity(entity);
-    response = client.execute(httpPut);
+    try {
+      response = client.execute(httpPut);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpPut);
+    }
   }
 
-  public void head(String path) throws IOException, URISyntaxException {
+  public void head(String path) throws URISyntaxException {
     HttpHead httpHead = new HttpHead(uri(path));
-    response = client.execute(httpHead);
+    try {
+      response = client.execute(httpHead);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  public void delete(String path) throws URISyntaxException, IOException {
+  public void delete(String path) throws URISyntaxException {
     HttpDelete httpDelete = new HttpDelete(uri(path));
-    response = client.execute(httpDelete);
+    try {
+      response = client.execute(httpDelete);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpDelete);
+    }
   }
 
 
-  public void invalid(String method, String path) throws IOException, URISyntaxException {
+  public void invalid(String method, String path) throws URISyntaxException {
     InvalidRequest request = new InvalidRequest(method, uri(path).toString());
-    response = client.execute(request);
+    try {
+      response = client.execute(request);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(request);
+    }
   }
 
-  public HttpPatch patch(String content, String path) throws URISyntaxException, IOException {
+  public HttpPatch patch(String content, String path) throws URISyntaxException, UnsupportedEncodingException {
     httpPatch = new HttpPatch(uri(path));
     httpPatch.setEntity(new StringEntity(content));
     return httpPatch;
   }
 
-  public void setEtag(String etag) throws URISyntaxException, IOException {
+  public void setEtag(String etag) throws URISyntaxException {
     httpPatch.setHeader("ETag", etag);
-    response = client.execute(httpPatch);
+    try {
+      response = client.execute(httpPatch);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpPatch);
+    }
   }
   
-  public void requestWithRange(String path, String range) throws URISyntaxException, IOException {
+  public void requestWithRange(String path, String range) throws URISyntaxException {
     HttpGet httpGet = new HttpGet(uri(path));
     httpGet.setHeader("Content-Range", range);
-    response = client.execute(httpGet);
+    try {
+      response = client.execute(httpGet);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequest(httpGet);
+    }
   }
   
-  public void redirect(String path) throws IOException, URISyntaxException {
+  public void redirect(String path) throws URISyntaxException {
     HttpClientContext context = HttpClientContext.create();
     HttpGet httpGet = new HttpGet(uri(path));
 
-    response = client.execute(httpGet, context);
+    try {
+      response = client.execute(httpGet, context);
+    } catch (IOException e) {
+      e.printStackTrace();
+      retryRequestWithContext(httpGet, context);
+    }
+
     HttpHost target = context.getTargetHost();
 
     List<URI> redirectLocations = context.getRedirectLocations();

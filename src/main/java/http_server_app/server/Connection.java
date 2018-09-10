@@ -1,5 +1,6 @@
 package http_server_app.server;
 
+import http_server_app.application.config.Config;
 import http_server_app.application.controller.Controller;
 import http_server_app.application.controller.Handler.MethodNotAllowedHandler;
 import http_server_app.server.Request.Request;
@@ -34,6 +35,8 @@ public class Connection {
     try {
       this.request = new Request(requestBuilder.toString()).build();
     } catch (InvalidRequestException e) {
+      Config.logger.log("ERROR", e.getMessage());
+
       invalidRequest = true;
     }
   }
@@ -59,6 +62,7 @@ public class Connection {
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Read failed");
+      Config.logger.log("ERROR", ex.getMessage());
     }
   }
 }

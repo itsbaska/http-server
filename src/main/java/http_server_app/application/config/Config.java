@@ -2,7 +2,6 @@ package http_server_app.application.config;
 
 import http_server_app.application.controller.Handler.*;
 import http_server_app.application.controller.Handler.StaticHandlers.StaticFileHandler;
-import http_server_app.server.Directory.Directory;
 import http_server_app.server.Logger.Logger;
 import http_server_app.server.Request.Credential;
 import http_server_app.server.Routes.Routes;
@@ -17,11 +16,10 @@ public class Config {
   public static final Credential credential = new Credential("one", "two");
   public static final String rootPath = "src/main/java/http_server_app";
   public static final File publicDirectory = new File(rootPath + "/application/assets/public");
-  public static final Routes routes = setRoutes();
   public static final Logger logger = setLogger();
+  public static final Routes routes = setRoutes();
   public static final Storage storage = new Storage();
   public static final String DEFAULT_PORT = "3000";
-
 
   private static Logger setLogger() {
     Logger logger = new Logger();
@@ -31,7 +29,7 @@ public class Config {
 
   private static Routes setRoutes() {
     Routes routes = new Routes();
-    routes.add("/", new RootHandler());
+    routes.add("/", new DirectoryHandler(publicDirectory));
     routes.add("/echo", new EchoHandler());
     routes.add("/form", new FormHandler());
     routes.add("/method_options", new OPTIONSHandler());
@@ -41,14 +39,20 @@ public class Config {
     routes.add("/logs", new AUTHHandler());
     routes.add("/parameters", new ParameterHandler());
     routes.add("/formData", new FormDataHandler());
-    setStaticRoutes(routes);
+    setStaticRoutes(routes, publicDirectory);
     return routes;
   }
 
-  private static void setStaticRoutes(Routes routes) {
-    Directory directory = new Directory(publicDirectory);
-    for (String fileName : directory.getFileNames()) {
-      routes.add("/" + fileName, new StaticFileHandler(fileName));
+  private static void setStaticRoutes(Routes routes, File directory) {
+    File[] files = directory.listFiles();
+    for (File file : files) {
+      String path = file.getPath().replace(publicDirectory.getPath(), "");
+      if (file.isDirectory()) {
+        setStaticRoutes(routes, file);
+        routes.add(path, new DirectoryHandler(file));
+      } else {
+        routes.add(path, new StaticFileHandler(file));
+      }
     }
   }
 
@@ -58,9 +62,11 @@ public class Config {
       String chosenPort = args[1];
       if (portIsNotAvailable(chosenPort)) {
         System.err.println("PORT: " + chosenPort + " is already in use.");
+        logger.log("Error", "PORT: " + chosenPort + " is already in use.");
         System.exit(1);
       } else {
         System.out.println("PORT: " + chosenPort);
+        logger.log("Success", "PORT: " + chosenPort);
         System.out.println("Success!");
         port = chosenPort;
       }
@@ -69,6 +75,6 @@ public class Config {
     if (port == null) {
       port = DEFAULT_PORT;
     }
-     return port;
+    return port;
   }
 }
