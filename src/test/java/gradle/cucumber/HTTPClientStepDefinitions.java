@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static java.lang.Runtime.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -51,20 +52,19 @@ public class HTTPClientStepDefinitions {
   @Given("^I start the server with the option \"([^\"]*)\"$")
   public void iStartTheServerWithTheOption(String option) {
     if (!serverIsRunning) {
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-        server.stop();
+      getRuntime().addShutdownHook(new Thread(() -> {
         serverIsRunning = false;
       }));
       try {
-        server = new Server("5000");
-        Thread thread = new Thread(server);
-        thread.start();
+        getRuntime().exec("java -jar ./build/libs/http-server-all.jar " + option);
         serverIsRunning = true;
+        Thread.sleep(3000);
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
   }
+
 
   @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
   public void iRequestOnPort(String path, String port) throws Throwable {
@@ -81,7 +81,7 @@ public class HTTPClientStepDefinitions {
       case "PUT":
         client.put(body, path);
         break;
-      case  "PATCH":
+      case "PATCH":
         client.patch(body, path);
         break;
     }
