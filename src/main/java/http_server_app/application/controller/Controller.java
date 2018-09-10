@@ -17,7 +17,7 @@ public class Controller {
   }
 
   public Response handleRequest(Request request) {
-    request.log();
+    Config.logger.log("REQUEST", request.getRequestLine());
     Route route = routes.routes.get(request.path);
 
     if (route == null) {

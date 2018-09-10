@@ -1,7 +1,5 @@
 package http_server_app.server.Request;
 
-import http_server_app.application.config.Config;
-import http_server_app.server.Directory.FileHandler;
 import http_server_app.server.utils.Method;
 
 import java.util.HashMap;
@@ -30,13 +28,8 @@ public class Request {
     return headerValue;
   }
 
-  private String getRequestLine() {
+  public String getRequestLine() {
     return request.split("\\r\\n")[0];
-  }
-
-  public void log() {
-    FileHandler logger = new FileHandler(Config.logger.logFile);
-    logger.addContent(getRequestLine() + "\n");
   }
 
   public Request build() {

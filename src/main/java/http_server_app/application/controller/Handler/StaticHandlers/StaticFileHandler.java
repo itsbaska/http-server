@@ -9,23 +9,24 @@ import http_server_app.server.utils.MimeType;
 
 import java.io.File;
 
-import static http_server_app.application.config.Config.publicDirectory;
 import static http_server_app.server.utils.StatusCode.*;
 
 public class StaticFileHandler extends Handler {
-  public StaticFileHandler(String fileName) {
-    this.fileName = fileName;
+  private File file;
+
+  public StaticFileHandler(File file) {
+    this.file = file;
   }
 
   public Response get(Request request) {
-    FileHandler file = new FileHandler(new File(publicDirectory.getPath() + "/" + fileName));
+    FileHandler fileHandler = new FileHandler(file);
     String contentRange = request.getHeader("Content-Range");
-    if (contentRange != "") return range(file, contentRange);
+    if (contentRange != "") return range(fileHandler, contentRange);
     else {
       return new Response.Builder()
         .setStatusCode(OK)
-        .setHeader("Content-type", MimeType.getType(file.getFileExtension()))
-        .setBody(file.readContent())
+        .setHeader("Content-type", MimeType.getType(fileHandler.getFileExtension()))
+        .setBody(fileHandler.readContent())
         .build();
     }
   }
@@ -39,8 +40,8 @@ public class StaticFileHandler extends Handler {
   }
 
   public Response patch(Request request) {
-    FileHandler file = new FileHandler(new File(publicDirectory.getPath() + "/" + fileName));
-    file.updateContent(request.body);
+    FileHandler fileHandler = new FileHandler(file);
+    fileHandler.updateContent(request.body);
     return new Response.Builder()
       .setStatusCode(NO_CONTENT)
       .build();
