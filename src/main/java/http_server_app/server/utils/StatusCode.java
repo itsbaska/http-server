@@ -8,7 +8,9 @@ public enum StatusCode {
   FOUND(302, "Found"),
   UNAUTHORIZED(401, "Unauthorized"),
   NOT_FOUND(404, "Not Found"),
-  NOT_ALLOWED(405, "Method Not Allowed");
+  NOT_ALLOWED(405, "Method Not Allowed"),
+  TEAPOT(418, "I'm a teapot");
+
 
 
   public int code;
