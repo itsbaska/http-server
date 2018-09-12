@@ -39,6 +39,8 @@ public class Config {
     routes.add("/logs", new AUTHHandler());
     routes.add("/parameters", new ParameterHandler());
     routes.add("/formData", new FormDataHandler());
+    routes.add("/tea", new TeaHandler());
+    routes.add("/coffee", new CoffeeHandler());
     setStaticRoutes(routes, publicDirectory);
     return routes;
   }
