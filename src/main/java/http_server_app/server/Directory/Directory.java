@@ -4,23 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Directory {
-  private final File directory;
-
-  public Directory(File directory) {
-    this.directory = directory;
-  }
-
-  public ArrayList<String> getFileNames() {
-    ArrayList<String> fileName = new ArrayList<>();
-    File[] listOfFiles = directory.listFiles();
-
-    if (listOfFiles != null) {
-      for (File file : listOfFiles) {
-        if (file.isFile() || file.isDirectory()) {
-          fileName.add(file.getName());
-        }
+  public static ArrayList<File> getFiles(File directory) {
+  ArrayList<File> files = new ArrayList<>();
+    File[] filesList = directory.listFiles();
+    if (filesList != null) {
+      for (File file : filesList) {
+          files.add(file);
       }
     }
-    return fileName;
+    return files;
   }
 }

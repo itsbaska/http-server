@@ -1,19 +1,18 @@
 package http_server_app.server.Directory;
 
+import http_server_app.application.config.Config;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class Formatter {
-  public static String link(String name) {
-    return "<a href=\"/" + name + "\">" + name + "</a>";
-  }
-
-  public static String list(ArrayList<String> files) {
+  public static String htmlList(ArrayList<String> array) {
     StringBuilder list = new StringBuilder();
     list.append("<ul>\n");
-    for (String file : files) {
+    for (String element : array) {
       list
         .append("<li>")
-        .append(file)
+        .append(element)
         .append("</li>\n");
     }
     list.append("</ul>\n");
@@ -21,17 +20,11 @@ public class Formatter {
     return list.toString();
   }
 
-  public static String unorderedList(ArrayList<String> files) {
-    StringBuilder list = new StringBuilder();
-    list.append("<ul>\n");
-    for (String file : files) {
-      list
-        .append("<li>")
-        .append(link(file))
-        .append("</li>\n");
+  public static String getFileListWithLinks(ArrayList<File> files) {
+    ArrayList<String> fileLinkList = new ArrayList<>();
+    for (File file : files) {
+        fileLinkList.add("<a href=\"" + file.getPath().replace(Config.publicDirectory.getPath(), "") + "\">" + file.getName() + "</a>");
     }
-    list.append("</ul>\n");
-
-    return list.toString();
+    return htmlList(fileLinkList);
   }
 }

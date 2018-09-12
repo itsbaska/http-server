@@ -7,8 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FileHandler extends Handler {
 
@@ -55,11 +53,5 @@ public class FileHandler extends Handler {
       e.printStackTrace();
     }
     return content;
-  }
-
-  public String toHtmlList() {
-    String content = new String(readContent());
-    ArrayList<String> list = new ArrayList<>(Arrays.asList(content.split("\\n")));
-    return Formatter.list(list);
   }
 }

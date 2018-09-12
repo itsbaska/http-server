@@ -1,4 +1,5 @@
-# HTTP server
+# HTTP Server  ![build--badge](https://travis-ci.com/itsbaska/http-server.svg?branch=master)
+
 
 
 ## Getting Started
@@ -30,12 +31,12 @@ java -jar build/libs/http-server-all.jar -p <PORT>
 ## Running Tests
 All Tests
 ```
-$ gradle test
+gradle test
 ```
 
 Cucumber Tests
 ```
-$ gradle cucumber
+gradle cucumber
 ```
 
 ## Built With

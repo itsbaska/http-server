@@ -58,7 +58,6 @@ public class HTTPClientStepDefinitions {
       try {
         getRuntime().exec("java -jar ./build/libs/http-server-all.jar " + option);
         serverIsRunning = true;
-        Thread.sleep(3000);
       } catch (Exception e) {
         e.printStackTrace();
       }
