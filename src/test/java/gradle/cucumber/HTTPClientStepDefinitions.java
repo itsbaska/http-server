@@ -3,6 +3,7 @@ package gradle.cucumber;
 import http_server_app.application.config.Config;
 import http_server_app.server.Directory.FileHandler;
 import HttpClient.HTTPClient;
+import http_server_app.server.Server;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -22,6 +23,7 @@ public class HTTPClientStepDefinitions {
   private HTTPClient client;
   private int DEFAULT_PORT = 3000;
   private static boolean serverIsRunning = false;
+  private Server server;
 
   @Before("not @port5000")
   public void connectClient() {
@@ -39,7 +41,7 @@ public class HTTPClientStepDefinitions {
 
   @Given("^the page content of \"([^\"]*)\" is empty$")
   public void thePageContentOfIsEmpty(String path) throws Throwable {
-    client.makeRequest("GET", path);
+    client.get(path);
     assertEquals(client.getResponseBody(), "");
   }
 
@@ -63,20 +65,46 @@ public class HTTPClientStepDefinitions {
   }
 
 
-  @And("^I request \"([^\"]*)\" \"([^\"]*)\" on port \"([^\"]*)\"$")
-  public void iRequestOnPort(String method, String path, String port) throws Throwable {
+  @And("^I request \"GET\" \"([^\"]*)\" on port \"([^\"]*)\"$")
+  public void iRequestOnPort(String path, String port) throws Throwable {
     client = new HTTPClient(Integer.parseInt(port), HOST);
-    client.makeRequest(method, path);
+    client.get(path);
   }
 
   @When("^I \"([^\"]*)\" \"([^\"]*)\" to \"([^\"]*)\"$")
   public void iRequestTo(String method, String body, String path) throws Throwable {
-    client.makeRequest(method, path, body);
+    switch (method) {
+      case "POST":
+        client.post(body, path);
+        break;
+      case "PUT":
+        client.put(body, path);
+        break;
+      case "PATCH":
+        client.patch(body, path);
+        break;
+    }
   }
 
   @When("^I request \"([^\"]*)\" \"([^\"]*)\"$")
   public void iRequest(String method, String path) throws Throwable {
-    client.makeRequest(method, path);
+    switch (method) {
+      case "GET":
+        client.get(path);
+        break;
+      case "OPTIONS":
+        client.options(path);
+        break;
+      case "HEAD":
+        client.head(path);
+        break;
+      case "DELETE":
+        client.delete(path);
+        break;
+      default:
+        client.invalid(method, path);
+        break;
+    }
   }
 
 
@@ -91,7 +119,7 @@ public class HTTPClientStepDefinitions {
   }
 
   @And("the response body should be empty")
-  public void theResponseBodyShouldBeEmpty() throws IOException {
+  public void the_response_body_should_be_empty() throws IOException {
     assertEquals("", client.getResponseBody());
   }
 
@@ -129,6 +157,7 @@ public class HTTPClientStepDefinitions {
   public void iHaveMadeAdditionalRequests() throws Throwable {
     client = new HTTPClient(DEFAULT_PORT, HOST);
     client.get("/echo");
+    client = new HTTPClient(DEFAULT_PORT, HOST);
     client.post("Hello, this is logs", "/echo");
   }
 
@@ -142,6 +171,7 @@ public class HTTPClientStepDefinitions {
     String body = client.getResponseBody();
     assertTrue(body.contains("GET /echo HTTP/1.1"));
     assertTrue(body.contains("POST /echo HTTP/1.1"));
+
   }
 
   @Then("^the response body should include \"([^\"]*)\"$")
@@ -172,7 +202,7 @@ public class HTTPClientStepDefinitions {
   }
 
   @And("^I specify a range \"([^\"]*)\"$")
-  public void iSpecifyARange(String range) throws URISyntaxException {
+  public void iSpecifyARange(String range) throws IOException, URISyntaxException {
     client.requestWithRange("/partial_content.txt", range);
   }
 
