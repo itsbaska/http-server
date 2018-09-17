@@ -1,8 +1,8 @@
 package server.Routes;
 
 import http_server_app.application.config.Config;
-import http_server_app.application.controller.Handler.EchoHandler;
-import http_server_app.application.controller.Handler.DirectoryHandler;
+import http_server_app.application.controllers.EchoHandler;
+import http_server_app.application.controllers.DirectoryHandler;
 import http_server_app.server.Routes.Route;
 import org.junit.Test;
 

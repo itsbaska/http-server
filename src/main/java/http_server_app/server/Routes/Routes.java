@@ -1,6 +1,6 @@
 package http_server_app.server.Routes;
 
-import http_server_app.application.controller.Handler.Handler;
+import http_server_app.application.controllers.Handler;
 
 import java.util.HashMap;
 

@@ -12,7 +12,7 @@ public class Logger {
   public File logFile;
 
   public void createLogFile(String logFileName) {
-    File logFile = new File(Config.rootPath + "/" + logFileName);
+    File logFile = new File(Config.rootPath.resolve(logFileName).toString());
     try {
       if (logFile.createNewFile()) {
         this.logFile = logFile;
@@ -31,7 +31,7 @@ public class Logger {
   }
 
   public void log(String infoType, String message) {
-    FileHandler logger = new FileHandler(Config.logger.logFile);
-    logger.addContent(getDate() + " [" + infoType + "]: " + message + "\n");
+    FileHandler logger = new FileHandler(logFile);
+    logger.addContent(getDate() + " [" + infoType.toUpperCase() + "]: " + message + "\n");
   }
 }

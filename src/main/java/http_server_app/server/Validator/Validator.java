@@ -2,7 +2,6 @@ package http_server_app.server.Validator;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 
 public class Validator {
 
@@ -24,11 +23,11 @@ public class Validator {
     }
   }
 
-  public static boolean portIsNotAvailable(String port) throws IOException {
+  public static boolean portIsNotAvailable(String port) {
     try {
       (new Socket("127.0.0.1", Integer.parseInt(port))).close();
       return true;
-    } catch (SocketException ignored) {
+    } catch (IOException ignored) {
       return false;
     }
   }

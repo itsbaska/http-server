@@ -1,6 +1,6 @@
 package http_server_app.server.Directory;
 
-import http_server_app.application.controller.Handler.Handler;
+import http_server_app.application.controllers.Handler;
 
 import java.io.File;
 import java.io.FileWriter;

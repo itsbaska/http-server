@@ -1,8 +1,7 @@
 package http_server_app.server;
 
-import http_server_app.application.config.Config;
-import http_server_app.application.controller.Controller;
-import http_server_app.application.controller.Handler.MethodNotAllowedHandler;
+import http_server_app.server.Routes.Controller;
+import http_server_app.application.controllers.MethodNotAllowedHandler;
 import http_server_app.server.Request.Request;
 import http_server_app.server.Response.Response;
 import http_server_app.server.utils.InvalidRequestException;
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 
 public class Connection {
   private Socket socket;
-  private Controller controller = new Controller();
   private Request request;
   private BufferedReader in;
   private DataOutputStream out;
@@ -35,7 +33,7 @@ public class Connection {
     try {
       this.request = new Request(requestBuilder.toString()).build();
     } catch (InvalidRequestException e) {
-      Config.logger.log("ERROR", e.getMessage());
+      ServerConfig.logger.log("ERROR", e.getMessage());
 
       invalidRequest = true;
     }
@@ -46,7 +44,7 @@ public class Connection {
     if (invalidRequest) {
       response = new MethodNotAllowedHandler().getResponse();
     } else {
-      response = controller.handleRequest(request);
+      response = Controller.handleRequest(request);
     }
     out = new DataOutputStream(socket.getOutputStream());
     out.write(response.responseBytes());
@@ -62,7 +60,7 @@ public class Connection {
     } catch (IOException ex) {
       System.out.println(ex);
       System.out.println("Read failed");
-      Config.logger.log("ERROR", ex.getMessage());
+      ServerConfig.logger.log("ERROR", ex.getMessage());
     }
   }
 }

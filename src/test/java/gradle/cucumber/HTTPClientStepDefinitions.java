@@ -2,7 +2,7 @@ package gradle.cucumber;
 
 import http_server_app.application.config.Config;
 import http_server_app.server.Directory.FileHandler;
-import HttpClient.HTTPClient;
+import client.HTTPClient;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;

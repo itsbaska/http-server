@@ -1,49 +1,43 @@
 package server.Directory;
 
-import http_server_app.application.config.Config;
 import http_server_app.server.Directory.FileHandler;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
 public class FileHandlerTest {
 
-//  @Test
-//  public void getFileNames() {
-//    Directory directory = new Directory();
-//    ArrayList<String> files = new ArrayList<>();
-//    files.add("file1");
-//    files.add("file2");
-//    files.add("image.gif");
-//    files.add("image.jpeg");
-//    files.add("image.png");
-//    files.add("partial_content.txt");
-//    files.add("patch-content.txt");
-//    files.add("text-file.txt");
-//
-//    Collection<String> listOne = files;
-////    Collection<String> listTwo = directory.getFileNames(Config.publicDirectory);
-//
-//    List<String> expectedList = new ArrayList<>(listOne);
-//    List<String> actualList = new ArrayList<>(listTwo);
-//
-//    expectedList.removeAll( listTwo );
-//    actualList.removeAll( listOne );
-//
-//    assertEquals(expectedList, actualList);
-//  }
-
   @Test
-  public void getFileExtention() {
-    FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + "/image.gif"));
-    assertEquals("gif", fileHandler.getFileExtension());
+  public void getFileExtension() {
+    File file = null;
+    File dir = Paths.get(".", "src", "test", "java", "temp").toFile();
+
+    try {
+      file = File.createTempFile("JavaTemp", ".txt", dir);
+    } catch (IOException e) {
+      System.out.println(e);
+    }
+
+    FileHandler fileHandler = new FileHandler(file);
+    assertEquals("txt", fileHandler.getFileExtension());
   }
 
   @Test
-  public void getFileExtentionWhenNoExtension() {
-    FileHandler fileHandler = new FileHandler(new File(Config.publicDirectory.getPath() + "file1"));
+  public void getFileExtensionWhenNoExtension() {
+    File file = null;
+    File dir = Paths.get(".", "src", "test", "java", "temp").toFile();
+
+    try {
+      file = File.createTempFile("JavaTemp", "", dir);
+    } catch (IOException e) {
+      System.out.println(e);
+    }
+
+    FileHandler fileHandler = new FileHandler(file);
     assertEquals("", fileHandler.getFileExtension());
   }
 }

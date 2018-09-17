@@ -1,13 +1,12 @@
 package http_server_app;
 
-import http_server_app.application.config.Config;
 import http_server_app.server.Server;
-
-import java.io.IOException;
+import http_server_app.server.ServerConfig;
 
 public class StartServer {
-  public static void main(String[] args) throws IOException {
-    String port = Config.setPort(args);
-    new Server(port).run();
+  public static void main(String[] args) {
+    Server server = new Server();
+    ServerConfig.setup(server, args);
+    server.run();
   }
 }
