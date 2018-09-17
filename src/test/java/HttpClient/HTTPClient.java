@@ -32,6 +32,7 @@ public class HTTPClient {
   private CloseableHttpClient client;
   private CloseableHttpResponse response;
   private HttpPatch httpPatch;
+  private HttpRequestBase request;
 
   public HTTPClient(int port, String host) {
     this.port = port;
@@ -59,11 +60,128 @@ public class HTTPClient {
   }
 
   public void get(String path) throws URISyntaxException {
+    request = new HttpGet(uri(path));
+  }
+
+  public void getWithAuth(String path) throws URISyntaxException {
     HttpGet httpGet = new HttpGet(uri(path));
+    Credential credential = new Credential("one", "two");
+    httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
     try {
       response = client.execute(httpGet);
     } catch (IOException e) {
       retryRequest(httpGet);
+    }
+  }
+
+  public void post(String body, String path) throws URISyntaxException, UnsupportedEncodingException {
+    HttpPost httpPost = new HttpPost(uri(path));
+    httpPost.setEntity(new StringEntity(body));
+    request = httpPost;
+  }
+
+  private void options(String path) throws URISyntaxException {
+    request = new HttpOptions(uri(path));
+  }
+
+  private void put(String body, String path) throws URISyntaxException {
+    HttpPut httpPut = new HttpPut(uri(path));
+    List<NameValuePair> formParams = new ArrayList<>();
+    formParams.add(new BasicNameValuePair(parseFormData(body)[0], parseFormData(body)[1]));
+    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
+    httpPut.setEntity(entity);
+    request = httpPut;
+  }
+
+  private void head(String path) throws URISyntaxException {
+    request = new HttpHead(uri(path));
+  }
+
+  private void delete(String path) throws URISyntaxException {
+    request = new HttpDelete(uri(path));
+  }
+
+
+  private void invalid(String method, String path) throws URISyntaxException {
+    request = new InvalidRequest(method, uri(path).toString());
+  }
+
+  private void patch(String content, String path) throws URISyntaxException, UnsupportedEncodingException {
+    httpPatch = new HttpPatch(uri(path));
+    httpPatch.setEntity(new StringEntity(content));
+    request = httpPatch;
+  }
+
+  public void setEtag(String etag) {
+    httpPatch.setHeader("ETag", etag);
+    request = httpPatch;
+  }
+
+  public void requestWithRange(String path, String range) throws URISyntaxException {
+    HttpGet httpGet = new HttpGet(uri(path));
+    httpGet.setHeader("Content-Range", range);
+    try {
+      response = client.execute(httpGet);
+    } catch (IOException e) {
+      retryRequest(httpGet);
+    }
+  }
+
+  public void redirect(String path) throws URISyntaxException {
+    HttpClientContext context = HttpClientContext.create();
+    HttpGet httpGet = new HttpGet(uri(path));
+    makeRequestWithContext(httpGet, context);
+    HttpHost target = context.getTargetHost();
+
+    List<URI> redirectLocations = context.getRedirectLocations();
+    URI location = URIUtils.resolve(httpGet.getURI(), target, redirectLocations);
+
+    System.out.println("Executing request " + httpGet.getRequestLine());
+    System.out.println("----------------------------------------");
+    System.out.println("Final HTTP location: " + location.toASCIIString());
+  }
+
+  public void makeRequest(String method, String path) throws URISyntaxException {
+    switch (method) {
+      case "GET":
+        get(path);
+        break;
+      case "OPTIONS":
+        options(path);
+        break;
+      case "HEAD":
+        head(path);
+        break;
+      case "DELETE":
+        delete(path);
+        break;
+      default:
+        invalid(method, path);
+        break;
+    }
+    try {
+      response = client.execute(request);
+    } catch (IOException e) {
+      retryRequest(request);
+    }
+  }
+
+  public void makeRequest(String method, String path, String body) throws URISyntaxException, UnsupportedEncodingException {
+    switch (method) {
+      case "POST":
+        post(body, path);
+        break;
+      case "PUT":
+        put(body, path);
+        break;
+      case "PATCH":
+        patch(body, path);
+        break;
+    }
+    try {
+      response = client.execute(request);
+    } catch (IOException e) {
+      retryRequest(request);
     }
   }
 
@@ -81,144 +199,22 @@ public class HTTPClient {
     }
   }
 
-  private void retryRequestWithContext(HttpRequestBase request, HttpClientContext context) {
+  private void makeRequestWithContext(HttpRequestBase request, HttpClientContext context) {
     try {
-      Thread.sleep(1000);
       response = client.execute(request, context);
-    } catch (IOException | InterruptedException e1) {
-      e1.printStackTrace();
+    } catch (IOException e) {
       try {
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         response = client.execute(request, context);
-      } catch (IOException | InterruptedException e2) {
-        e2.printStackTrace();
+      } catch (IOException | InterruptedException e1) {
+        try {
+          Thread.sleep(3000);
+          response = client.execute(request, context);
+        } catch (IOException | InterruptedException e2) {
+          e2.printStackTrace();
+        }
       }
     }
-  }
-
-  public void getWithAuth(String path) throws URISyntaxException {
-    HttpGet httpGet = new HttpGet(uri(path));
-    Credential credential = new Credential("one", "two");
-    httpGet.setHeader(AUTHORIZATION, "Basic " + credential.encode());
-    try {
-      response = client.execute(httpGet);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpGet);
-    }
-  }
-
-  public void post(String body, String path) throws URISyntaxException, UnsupportedEncodingException {
-    HttpPost httpPost = new HttpPost(uri(path));
-    httpPost.setEntity(new StringEntity(body));
-    try {
-      response = client.execute(httpPost);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpPost);
-    }
-  }
-
-  public void options(String path) throws URISyntaxException {
-    HttpOptions httpOptions = new HttpOptions(uri(path));
-    try {
-      response = client.execute(httpOptions);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpOptions);
-    }
-  }
-
-  public void put(String body, String path) throws URISyntaxException {
-    HttpPut httpPut = new HttpPut(uri(path));
-    List<NameValuePair> formParams = new ArrayList<>();
-    formParams.add(new BasicNameValuePair(parseFormData(body)[0], parseFormData(body)[1]));
-    UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, Consts.UTF_8);
-    httpPut.setEntity(entity);
-    try {
-      response = client.execute(httpPut);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpPut);
-    }
-  }
-
-  public void head(String path) throws URISyntaxException {
-    HttpHead httpHead = new HttpHead(uri(path));
-    try {
-      response = client.execute(httpHead);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void delete(String path) throws URISyntaxException {
-    HttpDelete httpDelete = new HttpDelete(uri(path));
-    try {
-      response = client.execute(httpDelete);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpDelete);
-    }
-  }
-
-
-  public void invalid(String method, String path) throws URISyntaxException {
-    InvalidRequest request = new InvalidRequest(method, uri(path).toString());
-    try {
-      response = client.execute(request);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(request);
-    }
-  }
-
-  public HttpPatch patch(String content, String path) throws URISyntaxException, UnsupportedEncodingException {
-    httpPatch = new HttpPatch(uri(path));
-    httpPatch.setEntity(new StringEntity(content));
-    return httpPatch;
-  }
-
-  public void setEtag(String etag) throws URISyntaxException {
-    httpPatch.setHeader("ETag", etag);
-    try {
-      response = client.execute(httpPatch);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpPatch);
-    }
-  }
-  
-  public void requestWithRange(String path, String range) throws URISyntaxException {
-    HttpGet httpGet = new HttpGet(uri(path));
-    httpGet.setHeader("Content-Range", range);
-    try {
-      response = client.execute(httpGet);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequest(httpGet);
-    }
-  }
-  
-  public void redirect(String path) throws URISyntaxException {
-    HttpClientContext context = HttpClientContext.create();
-    HttpGet httpGet = new HttpGet(uri(path));
-
-    try {
-      response = client.execute(httpGet, context);
-    } catch (IOException e) {
-      e.printStackTrace();
-      retryRequestWithContext(httpGet, context);
-    }
-
-    HttpHost target = context.getTargetHost();
-
-    List<URI> redirectLocations = context.getRedirectLocations();
-    URI location = URIUtils.resolve(httpGet.getURI(), target, redirectLocations);
-
-    System.out.println("Executing request " + httpGet.getRequestLine());
-    System.out.println("----------------------------------------");
-    System.out.println("Final HTTP location: " + location.toASCIIString());
   }
 
   public String getResponseBody() throws IOException {
