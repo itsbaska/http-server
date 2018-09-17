@@ -128,11 +128,13 @@ public class HTTPClientStepDefinitions {
   public void iHaveMadeAdditionalRequests() throws Throwable {
     client = new HTTPClient(DEFAULT_PORT, HOST);
     client.makeRequest("GET","/echo");
+    client = new HTTPClient(DEFAULT_PORT, HOST);
     client.makeRequest("POST", "/echo","Hello, this is logs");
   }
 
   @When("^I request \"GET\" \"([^\"]*)\" with authorization$")
   public void iRequestWithAuthorization(String path) throws Throwable {
+    client = new HTTPClient(DEFAULT_PORT, HOST);
     client.getWithAuth(path);
   }
 
@@ -160,7 +162,7 @@ public class HTTPClientStepDefinitions {
   }
 
   @And("^I set the etag to \"([^\"]*)\"$")
-  public void iSetTheEtagTo(String etag) throws Throwable {
+  public void iSetTheEtagTo(String etag) {
     client.setEtag(etag);
   }
 

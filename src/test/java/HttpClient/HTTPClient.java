@@ -185,7 +185,7 @@ public class HTTPClient {
     }
   }
 
-  public void retryRequest(HttpRequestBase request) {
+  private void retryRequest(HttpRequestBase request) {
     try {
       Thread.sleep(1000);
       response = client.execute(request);
